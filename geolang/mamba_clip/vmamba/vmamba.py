@@ -348,7 +348,7 @@ def cross_selective_scan(
     SelectiveScan=None,
     CrossScan=CrossScan,
     CrossMerge=CrossMerge,
-    no_einsum=False, # replace einsum with linear or conv1d to raise throughput
+    no_einsum=True, # replace einsum with linear or conv1d to raise throughput
     dt_low_rank=True,
 ):
     # out_norm: whatever fits (B, L, C); LayerNorm; Sigmoid; Softmax(dim=1);...

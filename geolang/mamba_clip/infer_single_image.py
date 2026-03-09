@@ -17,10 +17,10 @@ from tokenizer import SimpleTokenizer
 
 
 ## ============ CONFIGURATION — edit these directly ============ ##
-IMAGE_PATH = "/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/OCID-VLG/ARID10/floor/bottom/curved/seq05/rgb/result_2018-08-24-17-12-33.png"
+IMAGE_PATH = "/scratch/tstanley/VMamba/assets/architecture.png"
 TEXTS = [ "a photo of a dog", "a photo of a cat", "a photo of a toothpaste"]
 MODEL_NAME = "CLIP_VMamba_B"
-CHECKPOINT = "/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/VMamba_B_clip.pt"          # path to .pt checkpoint, or "" for random weights
+CHECKPOINT = "/scratch/tstanley/HAGRID/VMamba_B_clip.pt"          # path to .pt checkpoint, or "" for random weights
 GPU = 0                  # set to -1 for CPU
 ## ============================================================= ##
 
