@@ -1,3 +1,6 @@
+selective_scan_cuda_oflex = None
+selective_scan_cuda_core = None
+selective_scan_cuda = None
 import os
 import time
 import math
@@ -145,8 +148,7 @@ class CrossMerge_Ab_1direction(torch.autograd.Function):
 try:
     import selective_scan_cuda_oflex
 except Exception as e:
-    ...
-    # print(f"WARNING: can not import selective_scan_cuda_oflex.", flush=True)
+     print(f"WARNING: can not import selective_scan_cuda_oflex.", flush=True)
     # print(e, flush=True)
 
 try:
