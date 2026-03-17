@@ -1609,10 +1609,13 @@ class VSSM(nn.Module):
     
     def forward(self, x: torch.Tensor):
         x = self.patch_embed(x)
-        for layer in self.layers:
+        embeddings = []
+        for i, layer in enumerate(self.layers):
             x = layer(x)
+            if i in [0, 1, 2]:
+                embeddings.append(x)
         x = self.classifier(x)
-        return x
+        return x, embeddings
 
     def flops(self, shape=(3, 224, 224)):
         # shape = self.__input_shape__[1:]

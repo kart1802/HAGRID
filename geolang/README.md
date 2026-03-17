@@ -1,5 +1,48 @@
 # Language-guided Robot Grasping: CLIP-based Referring Grasp Synthesis in Clutter (CoRL2023)
 
+
+
+## New Installation Instructions
+1. First install vmamba-clip
+``` git clone https://github.com/MzeroMiko/VMamba.git
+
+
+Open two terminals one for internet access, and another for gpu without intenet access.
+
+load the env with internet access
+
+conda create -n vmamba python=3.10
+conda activate vmamba
+
+<!-- pip install -r requirements.txt
+export PIP_NO_BUILD_ISOLATION=1
+conda install setuptools wheel ninja
+pip install ftfy
+pip install regex
+
+
+load the gpu
+srun --job-name="gpu_setup"      --partition=gpu      --time=01:00:00      --ntasks=1      --cpus-per-task=2      --gpus-per-task=1      --mem-per-cpu=4G      --pty /bin/bash -il
+module load nvcc/12.9
+cd kernels/selective_scan && pip install --no-build-isolation .
+once selective scan is installed, get the model files
+wget -O VMamba_B_clip.pt https://huggingface.co/weiquan/mamba-clip/resolve/main/VMamba_B_clip.pt
+Change paths in mamba_clip/infer_simgle_image.py for testing. in HAGRID
+
+
+
+
+
+check statement python -c "import torch; print(torch.version.cuda)" -->
+
+
+
+
+
+
+
+
+
 Created by Georgios Tziafas, Yucheng XU, Arushi Goel, Mohammadreza Kasaei, Zhibin Li, Hamidreza Kasaei
 
 This is an official PyTorch implementation of the baseline end-to-end model [CROG](https://arxiv.org/abs/2311.05779) of our work. The implementation of our CROG model is based on the [CRIS](https://github.com/DerrickWang005/CRIS.pytorch) model, thanks for their amazing work! :beers:

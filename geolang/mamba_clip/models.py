@@ -222,13 +222,13 @@ class CLIP(nn.Module):
 
     def encode_image(self, image, ema=False):
         if not ema:
-            x = self.visual(image)
+            x, embeddings = self.visual(image)
             x = x @ self.image_projection
         else:
             x = self.visual_e(image)
             x = x @ self.image_projection_e
 
-        return x
+        return x, embeddings
 
     def encode_text(self, text, ema=False):
         if not ema:
@@ -380,8 +380,8 @@ def CLIP_Simba_S(**kwargs):
 
 
 def CLIP_VMamba_B(**kwargs):
-    from vmamba import build_model
-    from vmamba.config import get_model_config
+    from .vmamba import build_model
+    from .vmamba.config import get_model_config
 
     vmamba_model_name = "vssm_base_224"
     cfg = get_model_config(model_name=vmamba_model_name)
@@ -404,8 +404,8 @@ def CLIP_VMamba_B(**kwargs):
 
 
 def CLIP_VMamba_T220(**kwargs):
-    from vmamba import build_model
-    from vmamba.config import get_model_config
+    from .vmamba import build_model
+    from .vmamba.config import get_model_config
 
     vmamba_model_name = "vssm_tiny_224_0220"
     cfg = get_model_config(model_name=vmamba_model_name)
@@ -428,8 +428,8 @@ def CLIP_VMamba_T220(**kwargs):
 
 
 def CLIP_VMamba_S(**kwargs):
-    from vmamba import build_model
-    from vmamba.config import get_model_config
+    from .vmamba import build_model
+    from .vmamba.config import get_model_config
 
     vmamba_model_name = "vssm_small_224"
     cfg = get_model_config(model_name=vmamba_model_name)

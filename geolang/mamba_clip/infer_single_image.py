@@ -55,8 +55,8 @@ def main():
 
     # ---- preprocess image ---------------------------------------------------
     transform = transforms.Compose([
-        transforms.Resize(224),
-        transforms.CenterCrop(224),
+        transforms.Resize(416),
+        transforms.CenterCrop(416),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225]),
@@ -70,7 +70,8 @@ def main():
     text_tokens = tokenizer(TEXTS).to(device)  # N_texts, 77
 
     # ---- encode -------------------------------------------------------------
-    image_features = model.encode_image(img_tensor)                 # 1, embed_dim
+    image_features, embeddings = model.encode_image(img_tensor) 
+    print (embeddings[0].shape,"embeddings")  # 1, embed_dim
     print ("Image features shape:", image_features.shape)
     text_features  = model.encode_text(text_tokens)                 # N, embed_dim
     print ("Text features shape:", text_features.shape)

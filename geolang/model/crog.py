@@ -5,10 +5,7 @@ import torch.nn.functional as F
 from model.clip import build_model
 
 from .layers import FPN, Projector, TransformerDecoder, MultiTaskProjector
-import mamba_clip.models as mamba_models
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "mamba_clip")))
+
 
 class CROG(nn.Module):
     def __init__(self, cfg):
@@ -19,25 +16,13 @@ class CROG(nn.Module):
         self.use_pretrained_clip = cfg.use_pretrained_clip
         self.use_grasp_masks = cfg.use_grasp_masks
         
-        # # Vision & Text Encoder
-        # clip_model = torch.jit.load(cfg.clip_pretrain,
-        #                             map_location="cpu").eval()
-        # print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
-                # ---------------- Vision & Text Encoder ----------------
-        print(f"Load pretrained Mamba-CLIP: {self.use_pretrained_clip}")
-        if self.use_pretrained_clip:
-            # initialize Mamba-CLIP
-            self.backbone = mamba_models.CLIP_VMamba_B(mask_ratio=0.0)
-            # optionally load checkpoint if needed
-            if cfg.clip_pretrain:
-                ckpt = torch.load(cfg.clip_pretrain, map_location="cpu", weights_only=False)
-                state_dict = ckpt.get("state_dict", ckpt)
-                state_dict = {k.replace("module.", ""): v for k, v in state_dict.items()}
-                self.backbone.load_state_dict(state_dict, strict=False)
-        else:
-            # randomly initialized
-            self.backbone = mamba_models.CLIP_VMamba_B(mask_ratio=0.0)
-        # self.backbone = build_model(clip_model.state_dict(), cfg.word_len, self.use_pretrained_clip).float()
+        # Vision & Text Encoder
+        clip_model = torch.jit.load(cfg.clip_pretrain,
+                                    map_location="cpu").eval()
+        print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
+        self.backbone = build_model(clip_model.state_dict(), cfg.word_len, self.use_pretrained_clip).float()
+        
+        
         # Multi-Modal FPN
         self.neck = FPN(in_channels=cfg.fpn_in, out_channels=cfg.fpn_out)
         
@@ -75,6 +60,10 @@ class CROG(nn.Module):
         # word: b, length, 1024
         # state: b, 1024
         vis = self.backbone.encode_image(img)
+        print ("Visual features shape 0:", vis[0].shape)
+        print ("Visual features shape 1:", vis[1].shape)
+        print ("Visual features shape 2:", vis[2].shape)
+
         word, state = self.backbone.encode_text(word)
 
         # b, 512, 26, 26 (C4)

@@ -327,7 +327,7 @@ def validate_without_grasp(val_loader, model, epoch, args):
         
         # inference & get predictions from model
         pred, ins_mask_targets = model(image, text, ins_mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask)
-        
+
         # Interpolate the predicted ins mask to the same size of input image
         ins_mask_preds = torch.sigmoid(pred)
         if ins_mask_preds.shape[-2:] != image.shape[-2:]:

@@ -1,7 +1,7 @@
 from .crog import CROG
 from .ssg import SSG
 from loguru import logger
-
+from .geolang import geolang
 
 def build_crog(args):
     model = CROG(args)
@@ -26,4 +26,9 @@ def build_crog(args):
 def build_ssg(args):
     model = SSG(args)
 
+    return model, model.parameters()
+
+def build_geolang(args):
+    model = geolang(args)
+    
     return model, model.parameters()

@@ -172,6 +172,14 @@ def main_worker(gpu, args):
                             word_length=args.word_len,
                             split='val',
                             version=args.version)
+    
+    # get item of train_data for one sample
+    
+    sample = train_data[0]
+    print ("Sample keys:", sample.keys())
+    print ("Image shape:", sample['img'].shape)
+    print ("Mask shape:", sample['mask'].shape)
+    print ("depth shape:", sample['depth'].shape)
         
 
     # build dataloader
