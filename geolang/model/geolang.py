@@ -64,7 +64,7 @@ class geolang(nn.Module):
                 out_channels=cfg.adci_out_channels,
                 L=3,
                 G=cfg.adci_groups,
-                target_size=(52, 52),
+                target_size=(26, 26),
             )
         else:
             self.adci = None
@@ -91,10 +91,9 @@ class geolang(nn.Module):
             v = self._to_bchw(v) 
             B, C, H, W = v.shape
 
-            # Skip highest resolution (expensive)
-            # if i == 0 or H * W > self.dggm_max_tokens:
-            #     out.append(v)
-            #     continue
+            if H * W > self.dggm_max_tokens:
+                out.append(v)
+                continue
 
             v = v.permute(0, 2, 3, 1)  # B H W C
             v = self.dggm_blocks[i](v, depth)

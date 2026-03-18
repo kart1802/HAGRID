@@ -11,7 +11,6 @@ import os
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "mamba_clip")))
 
-import mamba_clip.models as mamba_models
 
 from model.geolang import geolang
 
@@ -30,7 +29,7 @@ if __name__ == "__main__":
         use_pretrained_clip=True,
         dggm_max_tokens=4096,
         adci_align_channels=256,
-        adci_out_channels=512,
+        adci_out_channels=128,
         adci_groups=1,
         mamba_clip_pretrain="/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/VMamba_B_clip.pt",
         clip_pretrain="/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/RN50.pt",
@@ -56,6 +55,7 @@ if __name__ == "__main__":
 
     print("adci:", None if out["adci"] is None else tuple(out["adci"].shape))
     print("global:", tuple(out["global"].shape))
-    print("word:", tuple(out["word"].shape))
+    print("word:", tuple(out["word"].shape)) # word: (1, 20, 512)
+#state: (1, 1024)
     print("state:", tuple(out["state"].shape))
     print("pad_mask:", tuple(out["pad_mask"].shape))

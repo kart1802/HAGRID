@@ -65,6 +65,9 @@ class CROG(nn.Module):
         print ("Visual features shape 2:", vis[2].shape)
 
         word, state = self.backbone.encode_text(word)
+        
+        print ("Word features shape:", word.shape)
+        print ("State features shape:", state.shape)
 
         # b, 512, 26, 26 (C4)
         fq = self.neck(vis, state)
@@ -72,7 +75,7 @@ class CROG(nn.Module):
         
         if self.use_contrastive:
             fq = self.decoder(fq, word, pad_mask)
-            fq = fq.reshape(b, c, h, w)
+            fq = fq.reshape(b, c, h, w) 
 
         if self.use_grasp_masks:
             
