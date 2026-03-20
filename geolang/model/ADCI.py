@@ -110,6 +110,7 @@ class ADCI(nn.Module):
         # Concatenate group features with the aligned last layer C_L
         C_L = aligned_features[-1]
         concat_feature = torch.cat(group_features + [C_L], dim=1)
+        print (concat_feature.shape,"concat_feature shape after concatenation")
         
         # e_v = MLP(Concatenate([GC_1, ..., GC_G, C_L]))
         e_v = self.final_mlp(concat_feature)

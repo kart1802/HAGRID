@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-from model.clip import build_model
 from model.DGGM import DGGM
 from model.ADCI import ADCI
 
@@ -17,24 +16,13 @@ class geolang(nn.Module):
         self.use_dggm = getattr(cfg, "use_dggm", False)
         self.use_adci = getattr(cfg, "use_adci", False)
         self.use_pretrained_mamba_clip = getattr(cfg, "use_pretrained_mamba_clip", True)
-        self.use_pretrained_clip = getattr(cfg, "use_pretrained_clip", True)
+        self.use_bert_text = getattr(cfg, "use_bert_text", True)
 
-        text_mode = getattr(cfg, "text_encoder_type", "vmamba")
-        text_mode = text_mode.lower().replace("-", "_")
-        if text_mode == "clip_bert":
-            text_mode = "clip"
-        valid_text_modes = {"vmamba", "clip", "bert"}
-        if text_mode not in valid_text_modes:
-            raise ValueError(
-                f"Unsupported text_encoder_type={text_mode}. "
-                f"Choose one of {sorted(valid_text_modes)}"
-            )
-        self.text_encoder_type = text_mode
-
-        self.dggm_max_tokens = getattr(cfg, "dggm_max_tokens", 4096)
-        self.max_text_tokens = getattr(cfg, "word_len", 20)
+        self.word_len = getattr(cfg, "word_len", 20)
         self.word_dim = getattr(cfg, "word_dim", 1024)
         self.bert_model_name = getattr(cfg, "bert_model_name", "bert-base-uncased")
+
+        self.dggm_max_tokens = getattr(cfg, "dggm_max_tokens", 4096)
 
         # ---------------- BACKBONE ----------------
         print(f"Load pretrained Mamba-CLIP: {self.use_pretrained_mamba_clip}")
@@ -46,25 +34,9 @@ class geolang(nn.Module):
             state_dict = {k.replace("module.", ""): v for k, v in state_dict.items()}
             self.backbone.load_state_dict(state_dict, strict=False)
 
-        # ---------------- TEXT ENCODER ----------------
-        self.backbone_text = None
-        self.text_tokenizer = None
-        self.text_encoder = None
-        self.text_proj = None
-
-        if self.text_encoder_type == "clip":
-            if not hasattr(cfg, "clip_pretrain") or not cfg.clip_pretrain:
-                raise ValueError("`clip_pretrain` must be set when text_encoder_type='clip'.")
-            print(f"Text encoder: CLIP (pretrained={self.use_pretrained_clip})")
-            clip_model = torch.jit.load(cfg.clip_pretrain, map_location="cpu").eval()
-            self.backbone_text = build_model(
-                clip_model.state_dict(),
-                self.max_text_tokens,
-                self.use_pretrained_clip,
-            ).float()
-
-        elif self.text_encoder_type == "bert":
-            print(f"Text encoder: BERT ({self.bert_model_name})")
+        # ---------------- TEXT ENCODER (BERT) ----------------
+        if self.use_bert_text:
+            print(f"Load pretrained BERT: {self.bert_model_name}")
             try:
                 from transformers import AutoModel, AutoTokenizer
             except ImportError as exc:
@@ -72,13 +44,15 @@ class geolang(nn.Module):
                     "BERT text encoder requires `transformers`. "
                     "Install with: pip install transformers"
                 ) from exc
+
             self.text_tokenizer = AutoTokenizer.from_pretrained(self.bert_model_name)
             self.text_encoder = AutoModel.from_pretrained(self.bert_model_name)
             hidden_size = self.text_encoder.config.hidden_size
             self.text_proj = nn.Identity() if hidden_size == self.word_dim else nn.Linear(hidden_size, self.word_dim)
-
         else:
-            print("Text encoder: VMamba-CLIP")
+            self.text_tokenizer = None
+            self.text_encoder = None
+            self.text_proj = nn.Identity()
 
         # ---------------- DGGM ----------------
         if self.use_dggm:
@@ -153,45 +127,13 @@ class geolang(nn.Module):
         print ("ADCI Used")
         return self.adci(feats)
 
-    def _prepare_word_tokens_vmamba(self, word):
-        context_len = self.backbone.positional_embedding.shape[0]
-        word = word[:, :self.max_text_tokens]
-        seq_len = word.shape[1]
-
-        if seq_len == context_len:
-            return word
-        if seq_len < context_len:
-            pad = torch.zeros(word.size(0),
-                              context_len - seq_len,
-                              dtype=word.dtype,
-                              device=word.device)
-            return torch.cat([word, pad], dim=1)
-        return word[:, :context_len]
-
-    def _encode_vmamba_text_features(self, word):
-        x = self.backbone.token_embedding(word)
-        x = x + self.backbone.positional_embedding
-        x = x.permute(1, 0, 2)
-        x = self.backbone.transformer(x)
-        x = x.permute(1, 0, 2)
-        x = self.backbone.ln_final(x)
-
-        word_feat = x @ self.backbone.text_projection
-        state = word_feat[torch.arange(word_feat.shape[0], device=word_feat.device),
-                          word.argmax(dim=-1)]
-        return word_feat, state
-
-    def _encode_text(self, word, device=None, sentence=None):
-        if self.text_encoder_type == "vmamba":
-            word = self._prepare_word_tokens_vmamba(word)
+    # --------------------------------------------------
+    # Forward
+    # --------------------------------------------------
+    def _encode_text(self, word=None, sentence=None, device=None):
+        if not self.use_bert_text:
+            word_feat, state = self.backbone.encode_text(word)
             pad_mask = (word == 0)
-            word_feat, state = self._encode_vmamba_text_features(word)
-            return word_feat, state, pad_mask
-
-        if self.text_encoder_type == "clip":
-            word = word[:, :self.max_text_tokens]
-            pad_mask = (word == 0)
-            word_feat, state = self.backbone_text.encode_text(word)
             return word_feat, state, pad_mask
 
         if sentence is not None:
@@ -199,13 +141,13 @@ class geolang(nn.Module):
                 sentence,
                 padding='max_length',
                 truncation=True,
-                max_length=self.max_text_tokens,
+                max_length=self.word_len,
                 return_tensors='pt'
             )
             input_ids = encoded["input_ids"].to(device)
             attention_mask = encoded["attention_mask"].to(device)
         else:
-            input_ids = word[:, :self.max_text_tokens].long().to(device)
+            input_ids = word.long().to(device)
             attention_mask = (input_ids != 0).long()
             if input_ids.max().item() >= self.text_encoder.config.vocab_size:
                 raise ValueError(
@@ -219,16 +161,15 @@ class geolang(nn.Module):
             return_dict=True
         )
         word_feat = self.text_proj(text_out.last_hidden_state)
+
         if text_out.pooler_output is None:
             state = word_feat[:, 0]
         else:
             state = self.text_proj(text_out.pooler_output)
+
         pad_mask = ~attention_mask.bool()
         return word_feat, state, pad_mask
 
-    # --------------------------------------------------
-    # Forward
-    # --------------------------------------------------
     def forward(self, img, word, depth=None, mask=None, grasp_qua_mask=None, grasp_sin_mask=None, grasp_cos_mask=None, grasp_wid_mask=None, sentence=None):
 
         # -------- Vision --------
@@ -239,9 +180,7 @@ class geolang(nn.Module):
         adci_out = self._apply_adci(vis)
 
         # -------- Text --------
-        word_feat, state, pad_mask = self._encode_text(word=word,
-                                device=img.device,
-                                sentence=sentence)
+        word_feat, state, pad_mask = self._encode_text(word=word, sentence=sentence, device=img.device)
 
         return {
             "vis": vis,
@@ -263,11 +202,14 @@ class geolang(nn.Module):
 #         use_dggm=True,
 #         use_adci=True,
 #         use_pretrained_mamba_clip=True,
+#         use_bert_text=True,
+#         bert_model_name="bert-base-uncased",
 #         dggm_max_tokens=4096,
 #         adci_align_channels=256,
 #         adci_out_channels=512,
 #         adci_groups=1,
 #         mamba_clip_pretrain="/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/VMamba_B_clip.pt",
+#         word_dim=1024,
 #         word_len=20
 #     )
 
@@ -278,10 +220,11 @@ class geolang(nn.Module):
 
 #     img = torch.randn(B, 3, H, W).to(device)
 #     depth = torch.randn(B, 1, H, W).to(device)
-#     word = torch.randint(0, 1000, (B, L)).to(device)
+#     word = torch.randint(0, 30000, (B, L)).to(device)
+#     sentence = ["pick up the red mug"]
 
 #     with torch.no_grad():
-#         out = model(img, word, depth)
+#         out = model(img, word, depth, sentence=sentence)
 
 #     print("\nForward pass OK\n")
 

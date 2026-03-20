@@ -26,14 +26,14 @@ if __name__ == "__main__":
         use_dggm=True,
         use_adci=True,
         use_pretrained_mamba_clip=True,
-        use_pretrained_clip=True,
+        text_encoder_type='bert', # vmamba or clip_bert or bert
         dggm_max_tokens=4096,
-        adci_align_channels=256,
-        adci_out_channels=128,
+        adci_align_channels=512,
+        adci_out_channels=512,
         adci_groups=1,
         mamba_clip_pretrain="/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/VMamba_B_clip.pt",
-        clip_pretrain="/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/RN50.pt",
         word_len=20
+        ,clip_pretrain = "/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/RN50.pt"
     )
 
     model = geolang(cfg).to(device).eval()

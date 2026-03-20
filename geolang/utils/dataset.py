@@ -54,6 +54,22 @@ info = {
 _tokenizer = _Tokenizer()
 
 
+def _resolve_dataset_root(root_dir: str) -> str:
+    if os.path.isabs(root_dir):
+        return root_dir
+
+    cwd_candidate = os.path.abspath(root_dir)
+    if os.path.isdir(cwd_candidate):
+        return cwd_candidate
+
+    geolang_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    geolang_candidate = os.path.abspath(os.path.join(geolang_dir, root_dir))
+    if os.path.isdir(geolang_candidate):
+        return geolang_candidate
+
+    return cwd_candidate
+
+
 def tokenize(texts: Union[str, List[str]],
              context_length: int = 77,
              truncate: bool = False) -> torch.LongTensor:
@@ -700,14 +716,14 @@ class OCIDVLGDataset(Dataset):
                  version="multiple"
     ):
         super(OCIDVLGDataset, self).__init__()
-        self.root_dir = root_dir
-        self.split_dir = os.path.join(root_dir, "data_split")
+        self.root_dir = _resolve_dataset_root(root_dir)
+        self.split_dir = os.path.join(self.root_dir, "data_split")
         self.split_map = {'train': 'train_expressions.json', 
                           'val': 'val_expressions.json',
                           'test': 'test_expressions.json'
                          }
         self.split = split
-        self.refer_dir = os.path.join(root_dir, "refer", version)
+        self.refer_dir = os.path.join(self.root_dir, "refer", version)
         
         self.transform_img = transform_img
         self.transform_grasp = transform_grasp
@@ -727,9 +743,6 @@ class OCIDVLGDataset(Dataset):
         self._load_split()
 
     def _load_dicts(self):
-        cwd = os.getcwd()
-        os.chdir(self.root_dir)
-        from .OCID_sub_class_dict import cnames, colors, subnames, sub_to_class
         cnames_inv = {int(v):k for k,v in cnames.items()}
         subnames_inv = {v:k for k,v in subnames.items()}
         self.class_names = cnames 
@@ -737,7 +750,6 @@ class OCIDVLGDataset(Dataset):
         self.class_instance_names = subnames
         self.idx_to_class_instance = subnames_inv
         self.instance_idx_to_class_idx = sub_to_class
-        os.chdir(cwd)
 
     def _load_split(self):
         refer_data = json.load(open(os.path.join(self.refer_dir, self.split_map[self.split])))
@@ -843,6 +855,7 @@ class OCIDVLGDataset(Dataset):
     def preprocess(self, data):
         img = data["img"]
         sent = data["sentence"]
+        depth = data.get("depth", None)
         if np.max(data["mask"]) <= 1.0:
             ins_mask = (data["mask"] * 255).astype(np.uint8)
         else:
@@ -859,6 +872,15 @@ class OCIDVLGDataset(Dataset):
             img, mat, self.input_size, flags=cv2.INTER_CUBIC,
             borderValue=[0.48145466 * 255, 0.4578275 * 255, 0.40821073 * 255]
         )
+
+        if depth is not None:
+            depth = cv2.warpAffine(
+                depth.astype(np.float32),
+                mat,
+                self.input_size,
+                flags=cv2.INTER_LINEAR,
+                borderValue=0.0
+            )
 
         img = torch.from_numpy(img.transpose((2, 0, 1)))
         if not isinstance(img, torch.FloatTensor):
@@ -899,6 +921,8 @@ class OCIDVLGDataset(Dataset):
         word_vec = tokenize(sent, self.word_length, True).squeeze(0)
 
         data["img"] = img
+        if depth is not None:
+            data["depth"] = depth
         data["mask"] = ins_mask
         data["grasp_masks"]["qua"] = grasp_qua_mask
         data["grasp_masks"]["ang"] = grasp_ang_mask
@@ -1075,7 +1099,7 @@ class OCIDGraspDataset(Dataset):
                  split):
         self.cfg = cfg
         self.split = split
-        self.root_dir = cfg.root_dir
+        self.root_dir = _resolve_dataset_root(cfg.root_dir)
         self.img_size = cfg.img_size
         self.depth_factor = cfg.depth_factor
         self.with_grasp_masks = cfg.with_grasp_masks
@@ -1096,9 +1120,6 @@ class OCIDGraspDataset(Dataset):
 
 
     def _load_dicts(self):
-        cwd = os.getcwd()
-        os.chdir(self.root_dir)
-        from .OCID_sub_class_dict import cnames, colors, subnames, sub_to_class
         cnames_inv = {int(v):k for k,v in cnames.items()}
         subnames_inv = {v:k for k,v in subnames.items()}
         self.class_names = cnames 
@@ -1106,7 +1127,6 @@ class OCIDGraspDataset(Dataset):
         self.class_instance_names = subnames
         self.idx_to_class_instance = subnames_inv
         self.instance_idx_to_class_idx = sub_to_class
-        os.chdir(cwd)
 
     
     def _get_rgb_image(self, scene_id, img_f, data_dict):

@@ -40,7 +40,7 @@ TRAIN:
   output_folder: exp/OCID-VLG_multiple
   save_freq: 1
   weight:  # path to initial weight (default: none)
-  resume:  weights/best_jindex_model.pth
+  resume:  
   evaluate: True  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
   # Ablation study
   use_contrastive: True

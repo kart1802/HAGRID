@@ -5,14 +5,15 @@ DATA:
   val_split: val
 TRAIN:
   # Base Arch
-  clip_pretrain: /home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/VMamba_B_clip.pt
+  mamba_clip_pretrain: /home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/VMamba_B_clip.pt
+  clip_pretrain: /home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/RN50.pt
   version: multiple
   input_size: 416
-  word_len: 17
+  word_len: 20
   word_dim: 1024
   vis_dim: 512
-  fpn_in: [512, 1024, 1024]
-  fpn_out: [256, 512, 1024]
+  # fpn_in: [512, 1024, 1024]
+  # fpn_out: [256, 512, 1024]
   sync_bn: True
   # Decoder
   num_layers: 3
@@ -44,6 +45,13 @@ TRAIN:
   evaluate: True  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
   # Ablation study
   use_contrastive: True
+  use_dggm: False
+  dggm_max_tokens: 4096
+  use_adci: False
+  adci_align_channels: 256
+  adci_out_channels: 512
+  adci_groups: 1
+  use_pretrained_mamba_clip : True
   use_pretrained_clip: True
   use_grasp_masks: True
 Distributed:
