@@ -6,6 +6,7 @@ DATA:
 TRAIN:
   # Base Arch
   clip_pretrain: /scratch/karthik/cv_project/HAGRID/geolang/pretrain/RN50.pt
+  # clip_pretrain: /scratch/tstanley/HAGRID/geolang/pretrain/RN50.pt
   version: multiple
   input_size: 416
   word_len: 17
@@ -40,7 +41,7 @@ TRAIN:
   output_folder: exp/OCID-VLG_multiple
   save_freq: 1
   weight:  # path to initial weight (default: none)
-  resume:  weights/best_jindex_model.pth
+  resume:  
   evaluate: True  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
   # Ablation study
   use_contrastive: True
