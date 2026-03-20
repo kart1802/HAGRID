@@ -11,7 +11,6 @@ from collections import OrderedDict
 os.environ["WANDB_MODE"] = "offline"
 os.environ["WANDB_API_KEY"] = '99ee90fdefff711f21b8b40a0fac1bdb95da2aa5'
 
-
 import cv2
 import torch
 import torch.cuda.amp as amp
@@ -59,6 +58,7 @@ def get_parser():
 @logger.catch
 def main():
     torch.multiprocessing.set_start_method('spawn')
+    print ("Is it working")
     
     args = get_parser()
     args.manual_seed = init_random_seed(args.manual_seed)

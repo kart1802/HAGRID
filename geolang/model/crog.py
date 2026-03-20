@@ -7,6 +7,7 @@ from model.clip import build_model
 from .layers import FPN, Projector, TransformerDecoder, MultiTaskProjector
 
 
+
 class CROG(nn.Module):
     def __init__(self, cfg):
         super().__init__()
@@ -16,6 +17,11 @@ class CROG(nn.Module):
         self.use_pretrained_clip = cfg.use_pretrained_clip
         self.use_grasp_masks = cfg.use_grasp_masks
         
+        # Vision & Text Encoder
+        clip_model = torch.jit.load(cfg.clip_pretrain,
+                                    map_location="cpu").eval()
+        print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
+        self.backbone = build_model(clip_model.state_dict(), cfg.word_len, self.use_pretrained_clip).float()
         # Vision & Text Encoder
         clip_model = torch.jit.load(cfg.clip_pretrain,
                                     map_location="cpu").eval()
