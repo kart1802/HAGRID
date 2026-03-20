@@ -14,13 +14,26 @@ from PIL import Image
 
 import models
 from tokenizer import SimpleTokenizer
+import os
+from pathlib import Path
+
+script_dir = Path(__file__).resolve().parent
+project_root = script_dir.parent
+repo_root = project_root.parent
+df_root = repo_root.parent
+
+VMAMBA_DIR = df_root / "VMamba"
+PRETRAIN_DIR = project_root / "pretrain"
+test_path_str = str(VMAMBA_DIR)
+model_path_str = str(PRETRAIN_DIR)
+
 
 
 ## ============ CONFIGURATION — edit these directly ============ ##
-IMAGE_PATH = "/scratch/tstanley/VMamba/assets/architecture.png"
+IMAGE_PATH = test_path_str + "/assets/architecture.png"
 TEXTS = [ "a photo of a dog", "a photo of a cat", "a photo of a toothpaste"]
 MODEL_NAME = "CLIP_VMamba_B"
-CHECKPOINT = "/scratch/tstanley/HAGRID/VMamba_B_clip.pt"          # path to .pt checkpoint, or "" for random weights
+CHECKPOINT = model_path_str + "/VMamba_B_clip.pt"          # path to .pt checkpoint, or "" for random weights
 GPU = 0                  # set to -1 for CPU
 ## ============================================================= ##
 

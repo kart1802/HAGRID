@@ -134,7 +134,7 @@ def test_adci():
     L = 3                         # 3 layers
     G = 1                         # 1 group containing all 3 layers
     align_channels = 256          # Unified channel dim for summation
-    out_channels = 128            # Final multimodal visual embedding size
+    out_channels = 512            # Final multimodal visual embedding size
     
     # 2. Generate mock multi-scale feature maps from DGGM
     features = []

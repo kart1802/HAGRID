@@ -5,7 +5,7 @@ DATA:
   val_split: val
 TRAIN:
   # Base Arch
-  clip_pretrain: /home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/RN50.pt
+  clip_pretrain: /scratch/karthik/cv_project/HAGRID/geolang/pretrain/RN50.pt
   version: multiple
   input_size: 416
   word_len: 17
