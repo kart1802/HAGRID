@@ -241,7 +241,7 @@ class CLIP(nn.Module):
 
             # x.shape = [batch_size, n_ctx, transformer.width]
             # take features from the eot embedding (eot_token is the highest number in each sequence)
-            x = x[torch.arange(x.shape[0]), text.argmax(dim=-1)] @ self.text_projection
+            state = x[torch.arange(x.shape[0]), text.argmax(dim=-1)] @ self.text_projection
         else:
             x = self.token_embedding_e(text)  # [batch_size, n_ctx, d_model]
             x = x + self.positional_embedding_e
@@ -252,12 +252,12 @@ class CLIP(nn.Module):
 
             # x.shape = [batch_size, n_ctx, transformer.width]
             # take features from the eot embedding (eot_token is the highest number in each sequence)
-            x = (
+            state = (
                 x[torch.arange(x.shape[0]), text.argmax(dim=-1)]
                 @ self.text_projection_e
             )
 
-        return x
+        return x, state
 
     def forward(self, image, text, momentum=0):
         self._update_momentum(momentum)

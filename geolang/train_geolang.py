@@ -8,8 +8,7 @@ import warnings
 from functools import partial
 from collections import OrderedDict
 
-os.environ["WANDB_MODE"] = "offline"
-os.environ["WANDB_API_KEY"] = '99ee90fdefff711f21b8b40a0fac1bdb95da2aa5'
+os.environ.setdefault("WANDB_MODE", "offline")
 
 
 import cv2
@@ -98,14 +97,19 @@ def main_worker(gpu, args):
                             world_size=args.world_size,
                             rank=args.rank)
 
-    # wandb
-    # if args.rank == 0:
-    #     wandb.init(job_type="training",
-    #                mode="online",
-    #                config=args,
-    #                project="CROG",
-    #                name=args.exp_name,
-    #                tags=[args.dataset, args.clip_pretrain])
+    # wandb (rank-0 only)
+    use_wandb = getattr(args, "use_wandb", True)
+    wandb_mode = getattr(args, "wandb_mode", os.environ.get("WANDB_MODE", "offline"))
+    wandb_project = getattr(args, "wandb_project", "CROG")
+    if args.rank == 0 and use_wandb:
+        wandb.init(
+            job_type="training",
+            mode=wandb_mode,
+            config=dict(args),
+            project=wandb_project,
+            name=args.exp_name,
+            tags=[str(args.dataset), str(args.version)],
+        )
     dist.barrier()
 
     # build model
@@ -253,6 +257,17 @@ def main_worker(gpu, args):
         else:
             iou, prec_dict, j_index = validate_without_grasp(val_loader, model, epoch_log, args)
 
+        if args.rank == 0 and use_wandb:
+            val_payload = {
+                "epoch": epoch_log,
+                "val/iou": float(iou),
+                "val/j_index@1": float(j_index[0]),
+                "val/j_index@5": float(j_index[1]),
+            }
+            for key, value in prec_dict.items():
+                val_payload[f"val/{key}"] = float(value)
+            wandb.log(val_payload, step=epoch_log)
+
         # save model
         if dist.get_rank() == 0:
             lastname = os.path.join(args.output_dir, "last_model.pth")
@@ -283,8 +298,8 @@ def main_worker(gpu, args):
         torch.cuda.empty_cache()
 
     time.sleep(2)
-    # if dist.get_rank() == 0:
-    #     wandb.finish()
+    if args.rank == 0 and use_wandb:
+        wandb.finish()
 
     logger.info("* Best IoU={} * ".format(best_IoU))
     total_time = time.time() - start_time

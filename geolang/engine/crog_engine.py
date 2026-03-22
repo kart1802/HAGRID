@@ -20,6 +20,7 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
     data_time = AverageMeter('Data', ':2.2f')
     lr = AverageMeter('Lr', ':1.6f')
     loss_meter = AverageMeter('Loss', ':2.4f')
+    ins_loss_meter = AverageMeter('Loss_ins', ':2.4f')
     qua_loss_metter = AverageMeter('Loss_qua', ':2.4f')
     sin_loss_metter = AverageMeter('Loss_sin', ':2.4f')
     cos_loss_metter = AverageMeter('Loss_cos', ':2.4f')
@@ -30,6 +31,7 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         len(train_loader),
         [
             batch_time, data_time, lr, loss_meter, 
+            ins_loss_meter,
             qua_loss_metter, sin_loss_metter, cos_loss_metter, wid_loss_metter, 
             iou_meter, pr_meter
         ],
@@ -49,6 +51,8 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
                     "lr",
                     "loss",
                     "loss_avg",
+                    "loss_ins",
+                    "loss_ins_avg",
                     "loss_qua",
                     "loss_qua_avg",
                     "loss_sin",
@@ -139,6 +143,7 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         pr5 = pr5 / dist.get_world_size()
 
         loss_meter.update(loss.item(), image.size(0))
+        ins_loss_meter.update(loss_dict["m_ins"], image.size(0))
         qua_loss_metter.update(loss_dict["m_qua"], image.size(0))
         sin_loss_metter.update(loss_dict["m_sin"], image.size(0))
         cos_loss_metter.update(loss_dict["m_cos"], image.size(0))
@@ -159,6 +164,8 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
                     float(lr.val),
                     float(loss_meter.val),
                     float(loss_meter.avg),
+                    float(ins_loss_meter.val),
+                    float(ins_loss_meter.avg),
                     float(qua_loss_metter.val),
                     float(qua_loss_metter.avg),
                     float(sin_loss_metter.val),
@@ -177,21 +184,28 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
 
         if (i + 1) % args.print_freq == 0:
             progress.display(i + 1)
-            # if dist.get_rank() in [-1, 0]:
-            #     wandb.log(
-            #         {
-            #             "time/batch": batch_time.val,
-            #             "time/data": data_time.val,
-            #             "training/lr": l;r.val,
-            #             "training/loss": loss_meter.val,
-            #             "training/loss_qua": qua_loss_metter.val,
-            #             "training/loss_sin": sin_loss_metter.val,
-            #             "training/loss_cos": cos_loss_metter.val,
-            #             "training/loss_wid": wid_loss_metter.val,
-            #             "training/iou": iou_meter.val,
-            #             "training/prec@50": pr_meter.val,
-            #         },
-            #         step=epoch * len(train_loader) + (i + 1))
+            use_wandb = getattr(args, "use_wandb", True)
+            is_rank0 = (not dist.is_initialized()) or dist.get_rank() == 0
+            if use_wandb and is_rank0:
+                global_step = (epoch - 1) * len(train_loader) + (i + 1)
+                wandb.log(
+                    {
+                        "time/batch": float(batch_time.val),
+                        "time/data": float(data_time.val),
+                        "train/lr": float(lr.val),
+                        "train/loss": float(loss_meter.val),
+                        "train/loss_avg": float(loss_meter.avg),
+                        "train/loss_ins": float(ins_loss_meter.val),
+                        "train/loss_qua": float(qua_loss_metter.val),
+                        "train/loss_sin": float(sin_loss_metter.val),
+                        "train/loss_cos": float(cos_loss_metter.val),
+                        "train/loss_wid": float(wid_loss_metter.val),
+                        "train/iou": float(iou_meter.val),
+                        "train/iou_avg": float(iou_meter.avg),
+                        "train/prec@50": float(pr_meter.val),
+                    },
+                    step=global_step,
+                )
 
 
 @torch.no_grad()

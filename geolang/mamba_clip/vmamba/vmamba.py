@@ -1607,13 +1607,26 @@ class VSSM(nn.Module):
     def get_num_layers(self):
         return len(self.layers)
     
-    def forward(self, x: torch.Tensor):
+    def forward(self, x):
         x = self.patch_embed(x)
         embeddings = []
         for i, layer in enumerate(self.layers):
             x = layer(x)
-            if i in [0, 1, 2]:
-                embeddings.append(x)
+            if i == 1:  # Layer 1: H/16 → upsample to H/8, channels=512
+                # x is (B, H/16, W/16, C1=512)
+                # Permute to (B, C, H, W) for interpolation
+                x_permuted = x.permute(0, 3, 1, 2)  # (B, 512, H/16, W/16)
+                x_upsampled = F.interpolate(x_permuted, scale_factor=2, mode='bilinear', align_corners=False)
+                embeddings.append(x_upsampled)  # (B, 512, H/8, W/8)
+            elif i == 2:  # Layer 2: H/32 → upsample to H/16, channels=1024
+                # x is (B, H/32, W/32, C2=1024)
+                x_permuted = x.permute(0, 3, 1, 2)  # (B, 1024, H/32, W/32)
+                x_upsampled = F.interpolate(x_permuted, scale_factor=2, mode='bilinear', align_corners=False)
+                embeddings.append(x_upsampled)  # (B, 1024, H/16, W/16)
+            elif i == 3:  # Layer 3: H/32 → keep as is, channels=1024
+                # x is (B, H/32, W/32, C3=1024)
+                x_permuted = x.permute(0, 3, 1, 2)  # (B, 1024, H/32, W/32)
+                embeddings.append(x_permuted)  # (B, 1024, H/32, W/32)
         x = self.classifier(x)
         return x, embeddings
 

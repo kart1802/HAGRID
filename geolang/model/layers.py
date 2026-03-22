@@ -45,7 +45,7 @@ class CoordConv(nn.Module):
 
 
 class MultiTaskProjector(nn.Module):
-    def __init__(self, word_dim=1024, in_dim=256, kernel_size=3):
+    def __init__(self, word_dim=512, in_dim=256, kernel_size=3):
         super().__init__()
         self.in_dim = in_dim
         self.kernel_size = kernel_size
@@ -351,7 +351,7 @@ class FPN(nn.Module):
         if self.single_embedding_mode:
             vis_channels = in_channels[0]
             # Text feature (state) is CLIP global feature in this codebase.
-            self.txt_proj = linear_layer(1024, vis_channels)
+            self.txt_proj = linear_layer(512, vis_channels) # Have changed to this from 1024 to 512 since we are using CLIP Vmamba B
             self.vis_proj = conv_layer(vis_channels, vis_channels, 1, 0)
             self.norm_layer = nn.Sequential(nn.BatchNorm2d(vis_channels),
                                             nn.ReLU(True))

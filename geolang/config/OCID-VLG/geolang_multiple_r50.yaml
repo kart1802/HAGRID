@@ -5,24 +5,24 @@ DATA:
   val_split: val
 TRAIN:
   # Base Arch
-  word_dim: 1024
+  word_dim: 512
   vis_dim: 512
-  fpn_in: [128]
-  fpn_out: [128]
+  fpn_in: [512]
+  fpn_out: [512]
   use_pretrained_mamba_clip: True
   mamba_clip_pretrain: /home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/VMamba_B_clip.pt
   clip_pretrain: /home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/RN50.pt
   version: multiple
   input_size: 416
-  word_len: 20
+  word_len: 77
   sync_bn: True # what does this do?
   # DGGM
   use_dggm: True
   dggm_max_tokens: 4096
   # ADCI
   use_adci: True
-  adci_align_channels: 256
-  adci_out_channels: 128
+  adci_align_channels: 512
+  adci_out_channels: 512
   adci_groups: 1
   # Decoder
   num_layers: 3
@@ -56,6 +56,10 @@ TRAIN:
   use_contrastive: True
   use_pretrained_clip: True
   use_grasp_masks: True
+  # Weights & Biases
+  use_wandb: True
+  wandb_mode: offline
+  wandb_project: Geolang
 Distributed:
   dist_url: tcp://localhost:3681
   dist_backend: 'nccl'

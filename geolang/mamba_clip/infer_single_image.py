@@ -12,12 +12,21 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 
-import models
-from tokenizer import SimpleTokenizer
-import os
+import sys
 from pathlib import Path
 
+# Setup path to allow imports and set package context
 script_dir = Path(__file__).resolve().parent
+parent_dir = script_dir.parent
+
+# Add parent to path so mamba_clip can be imported as a package
+sys.path.insert(0, str(parent_dir))
+
+# Import from the package
+from mamba_clip import models
+from mamba_clip.tokenizer import SimpleTokenizer
+import os
+
 project_root = script_dir.parent
 repo_root = project_root.parent
 df_root = repo_root.parent
@@ -33,7 +42,7 @@ model_path_str = str(PRETRAIN_DIR)
 IMAGE_PATH = test_path_str + "/assets/architecture.png"
 TEXTS = [ "a photo of a dog", "a photo of a cat", "a photo of a toothpaste"]
 MODEL_NAME = "CLIP_VMamba_B"
-CHECKPOINT = model_path_str + "/VMamba_B_clip.pt"          # path to .pt checkpoint, or "" for random weights
+CHECKPOINT = "/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/pretrain/VMamba_B_clip.pt"          # path to .pt checkpoint, or "" for random weights
 GPU = 0                  # set to -1 for CPU
 ## ============================================================= ##
 

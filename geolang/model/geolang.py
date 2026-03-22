@@ -37,6 +37,7 @@ class geolang(nn.Module):
         self.fpn_in = getattr(cfg, "fpn_in", [128])
         self.fpn_out = getattr(cfg, "fpn_out", [128])
         self.fpn_vis_dim = self.fpn_out[0]
+        self.DGGM_input_channels = [512, 1024, 1024]
 
         # ---------------- BACKBONE ----------------
         print(f"Load pretrained Mamba-CLIP: {self.use_pretrained_mamba_clip}")
@@ -56,15 +57,16 @@ class geolang(nn.Module):
             cfg.word_len,
             self.use_pretrained_clip
         ).float()
+        
 
         # ---------------- DGGM ----------------
         if self.use_dggm:
             print("Initializing DGGM")
 
             self.dggm_blocks = nn.ModuleList([
-                DGGM(256),
-                DGGM(512),
-                DGGM(1024),
+                DGGM(self.DGGM_input_channels[0]),
+                DGGM(self.DGGM_input_channels[1]),
+                DGGM(self.DGGM_input_channels[2]),
             ])
         else:
             self.dggm_blocks = None
@@ -74,7 +76,7 @@ class geolang(nn.Module):
             print("Initializing ADCI")
 
             self.adci = ADCI(
-                in_channels_list=[256, 512, 1024],
+                in_channels_list=[512, 1024, 1024],  # C2, C3, C4 channels from the backbone
                 align_channels=cfg.adci_align_channels,
                 out_channels=cfg.adci_out_channels,
                 L=3,
@@ -191,6 +193,8 @@ class geolang(nn.Module):
         v4 = self.adci_to_v4(v4)
         # v5 = self.adci_to_v5(v5)
         return [v4]
+    
+
 
     def _parse_forward_inputs(self, args, kwargs):
         depth = kwargs.get("depth", None)
@@ -227,13 +231,17 @@ class geolang(nn.Module):
 
         # -------- Vision --------
         global_feat, vis = self.backbone.encode_image(img)
+  
 
         vis = self._apply_dggm(vis, depth)
         
         adci_out = self._apply_adci(vis)
 
         # -------- Text --------
-        word_feat, state = self.backbone_text.encode_text(word)
+        # print (f"word.shape: {tuple(word.shape)}")
+        word_feat, state = self.backbone.encode_text(word)
+        # print (f"word_feat shape:", tuple(word_feat.shape))
+        # print (f"state shape:", tuple(state.shape))
 
         pred = None
         grasp_qua_pred = None
@@ -245,10 +253,12 @@ class geolang(nn.Module):
             fpn_inputs = self._single_embedding_to_fpn_inputs(adci_out)
             fq = self.neck(fpn_inputs, state)
             fq = self.fpn_to_decoder(fq)
+            # print (f"FPN output shape:", tuple(fq.shape)) # matched with CROG
             b, c, h, w = fq.size()
 
             if self.use_contrastive and self.decoder is not None:
                 fq = self.decoder(fq, word_feat, pad_mask)
+                # print (f"Decoder output shape:", tuple(fq.shape))
                 if isinstance(fq, list):
                     fq = fq[-1]
                 fq = fq.reshape(b, c, h, w)
