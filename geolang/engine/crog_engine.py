@@ -1,5 +1,6 @@
 import os
 import time
+import csv
 from tqdm import tqdm
 
 import cv2
@@ -34,6 +35,36 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         ],
         prefix="Training: Epoch=[{}/{}] ".format(epoch, args.epochs))
 
+    csv_path = None
+    if (not dist.is_initialized()) or dist.get_rank() == 0:
+        csv_path = os.path.join(args.output_dir, "train_metrics.csv")
+        file_exists = os.path.exists(csv_path)
+        if (not file_exists) or os.path.getsize(csv_path) == 0:
+            with open(csv_path, "w", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow([
+                    "epoch",
+                    "iter",
+                    "total_iters",
+                    "lr",
+                    "loss",
+                    "loss_avg",
+                    "loss_qua",
+                    "loss_qua_avg",
+                    "loss_sin",
+                    "loss_sin_avg",
+                    "loss_cos",
+                    "loss_cos_avg",
+                    "loss_wid",
+                    "loss_wid_avg",
+                    "iou",
+                    "iou_avg",
+                    "prec50",
+                    "prec50_avg",
+                    "batch_time",
+                    "data_time",
+                ])
+
     model.train()
     time.sleep(2)
     end = time.time()
@@ -53,6 +84,8 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         grasp_sin_mask = data["grasp_masks"]["sin"]
         grasp_cos_mask = data["grasp_masks"]["cos"]
         grasp_wid_mask = data["grasp_masks"]["wid"]
+        depth = data["depth"]
+      
         
         
         data_time.update(time.time() - end)
@@ -69,8 +102,21 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         # image = F.interpolate(image, size=(new_size, new_size), mode='bilinear')
 
         # forward
+        # Depth (H,W) -> (1, H, W) -> (B, 1, H, W)  
+        if depth is not None:
+            depth = depth.cuda(non_blocking=True).unsqueeze(1)
+        
         with amp.autocast():
-            pred, target, loss, loss_dict = model(image, text, ins_mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask)
+            pred, target, loss, loss_dict = model(
+                image,
+                text,
+                mask=ins_mask,
+                grasp_qua_mask=grasp_qua_mask,
+                grasp_sin_mask=grasp_sin_mask,
+                grasp_cos_mask=grasp_cos_mask,
+                grasp_wid_mask=grasp_wid_mask,
+                depth=depth,
+            )
         
         ins_mask_pred = pred[0]
         ins_mask_target = target[0]
@@ -102,6 +148,32 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         lr.update(scheduler.get_last_lr()[-1])
         batch_time.update(time.time() - end)
         end = time.time()
+
+        if csv_path is not None:
+            with open(csv_path, "a", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow([
+                    epoch,
+                    i + 1,
+                    len(train_loader),
+                    float(lr.val),
+                    float(loss_meter.val),
+                    float(loss_meter.avg),
+                    float(qua_loss_metter.val),
+                    float(qua_loss_metter.avg),
+                    float(sin_loss_metter.val),
+                    float(sin_loss_metter.avg),
+                    float(cos_loss_metter.val),
+                    float(cos_loss_metter.avg),
+                    float(wid_loss_metter.val),
+                    float(wid_loss_metter.avg),
+                    float(iou_meter.val),
+                    float(iou_meter.avg),
+                    float(pr_meter.val),
+                    float(pr_meter.avg),
+                    float(batch_time.val),
+                    float(data_time.val),
+                ])
 
         if (i + 1) % args.print_freq == 0:
             progress.display(i + 1)
@@ -163,7 +235,15 @@ def validate_with_grasp(val_loader, model, epoch, args):
         grasp_wid_mask = grasp_wid_mask.cuda(non_blocking=True).unsqueeze(1)
         
         # inference & get predictions from model
-        pred, target = model(image, text, ins_mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask)
+        pred, target = model(
+            image,
+            text,
+            mask=ins_mask,
+            grasp_qua_mask=grasp_qua_mask,
+            grasp_sin_mask=grasp_sin_mask,
+            grasp_cos_mask=grasp_cos_mask,
+            grasp_wid_mask=grasp_wid_mask,
+        )
         
         # predictions
         ins_mask_preds = pred[0]
@@ -326,7 +406,15 @@ def validate_without_grasp(val_loader, model, epoch, args):
         grasp_wid_mask = grasp_wid_mask.cuda(non_blocking=True).unsqueeze(1)
         
         # inference & get predictions from model
-        pred, ins_mask_targets = model(image, text, ins_mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask)
+        pred, ins_mask_targets = model(
+            image,
+            text,
+            mask=ins_mask,
+            grasp_qua_mask=grasp_qua_mask,
+            grasp_sin_mask=grasp_sin_mask,
+            grasp_cos_mask=grasp_cos_mask,
+            grasp_wid_mask=grasp_wid_mask,
+        )
 
         # Interpolate the predicted ins mask to the same size of input image
         ins_mask_preds = torch.sigmoid(pred)
@@ -426,7 +514,15 @@ def inference_with_grasp(test_loader, model, args):
         grasp_wid_mask = grasp_wid_mask.cuda(non_blocking=True).unsqueeze(1)
         
         # inference & get predictions from model
-        pred, target = model(image, text, ins_mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask)
+        pred, target = model(
+            image,
+            text,
+            mask=ins_mask,
+            grasp_qua_mask=grasp_qua_mask,
+            grasp_sin_mask=grasp_sin_mask,
+            grasp_cos_mask=grasp_cos_mask,
+            grasp_wid_mask=grasp_wid_mask,
+        )
         
         # predictions
         ins_mask_preds = pred[0]

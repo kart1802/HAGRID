@@ -842,6 +842,7 @@ class OCIDVLGDataset(Dataset):
 
     def preprocess(self, data):
         img = data["img"]
+        depth = data.get("depth", None)
         sent = data["sentence"]
         if np.max(data["mask"]) <= 1.0:
             ins_mask = (data["mask"] * 255).astype(np.uint8)
@@ -859,6 +860,17 @@ class OCIDVLGDataset(Dataset):
             img, mat, self.input_size, flags=cv2.INTER_CUBIC,
             borderValue=[0.48145466 * 255, 0.4578275 * 255, 0.40821073 * 255]
         )
+
+        if depth is not None:
+            depth = cv2.warpAffine(
+                depth.astype(np.float32),
+                mat,
+                self.input_size,
+                flags=cv2.INTER_NEAREST,
+                borderValue=0.0,
+            )
+        
+        
 
         img = torch.from_numpy(img.transpose((2, 0, 1)))
         if not isinstance(img, torch.FloatTensor):
@@ -899,6 +911,8 @@ class OCIDVLGDataset(Dataset):
         word_vec = tokenize(sent, self.word_length, True).squeeze(0)
 
         data["img"] = img
+        if depth is not None:
+            data["depth"] = depth
         data["mask"] = ins_mask
         data["grasp_masks"]["qua"] = grasp_qua_mask
         data["grasp_masks"]["ang"] = grasp_ang_mask
@@ -1118,7 +1132,9 @@ class OCIDGraspDataset(Dataset):
     def _get_depth_image(self, scene_id, img_f, data_dict):
         depth_path = os.path.join(self.root_dir, scene_id, "depth", img_f)
         depth = cv2.imread(depth_path, cv2.IMREAD_UNCHANGED) / float(self.depth_factor)
+        
         depth = 1 - (depth / np.max(depth))
+        
         data_dict["depth"] = depth
         
     

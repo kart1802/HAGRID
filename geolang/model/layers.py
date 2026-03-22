@@ -369,4 +369,3 @@ class FPN(nn.Module):
             vis = self.norm_layer(vis * txt_gate)
             vis = self.coordconv(vis)
             return vis
-

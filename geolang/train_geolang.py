@@ -28,7 +28,7 @@ import utils.config as config
 import wandb
 from utils.dataset import OCIDVLGDataset
 from engine.crog_engine import train_with_grasp, validate_with_grasp, validate_without_grasp
-from model import build_crog
+from model import build_geolang
 from utils.misc import (init_random_seed, set_random_seed, setup_logger,
                         worker_init_fn)
 
@@ -109,7 +109,7 @@ def main_worker(gpu, args):
     dist.barrier()
 
     # build model
-    model, param_list = build_crog(args)
+    model, param_list = build_geolang(args)
     if args.sync_bn:
         model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
     logger.info(model)
@@ -154,6 +154,10 @@ def main_worker(gpu, args):
     model = nn.parallel.DistributedDataParallel(model.cuda(),
                                                 device_ids=[args.gpu],
                                                 find_unused_parameters=True)
+    
+    # Set static graph to avoid "expected to mark variable ready only once" error
+    # This is needed when using gradient checkpointing (VMamba) with DDP
+    model._set_static_graph()
 
     # build dataset
     args.batch_size = int(args.batch_size / args.ngpus_per_node)
@@ -286,6 +290,9 @@ def main_worker(gpu, args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     logger.info('* Training time {} *'.format(total_time_str))
+
+    if dist.is_initialized():
+        dist.destroy_process_group()
 
 
 if __name__ == '__main__':

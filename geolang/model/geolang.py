@@ -18,7 +18,6 @@ PRETRAIN_DIR = project_root / "pretrain"
 model_path_str = str(PRETRAIN_DIR)
 
 
-print ("Importing geolang...")
 
 class geolang(nn.Module):
     def __init__(self, cfg):
@@ -167,7 +166,7 @@ class geolang(nn.Module):
             v = v.permute(0, 3, 1, 2).contiguous()
 
             out.append(v)
-            print (f"Applied DGGM to vis[{i}] with shape {tuple(v.shape)}")
+            # print (f"Applied DGGM to vis[{i}] with shape {tuple(v.shape)}")
 
         return out
 
@@ -179,7 +178,7 @@ class geolang(nn.Module):
             return None
 
         feats = [self._to_bchw(v) for v in vis[:3]] # Only use C0, C1, C2 for ADCI as per paper
-        print ("ADCI Used")
+        # print ("ADCI Used")
         return self.adci(feats)
 
     def _single_embedding_to_fpn_inputs(self, adci_feat):

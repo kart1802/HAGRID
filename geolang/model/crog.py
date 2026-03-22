@@ -7,7 +7,6 @@ from model.clip import build_model
 from .layers import FPN, Projector, TransformerDecoder, MultiTaskProjector
 
 
-
 class CROG(nn.Module):
     def __init__(self, cfg):
         super().__init__()
@@ -22,13 +21,6 @@ class CROG(nn.Module):
                                     map_location="cpu").eval()
         print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
         self.backbone = build_model(clip_model.state_dict(), cfg.word_len, self.use_pretrained_clip).float()
-        # Vision & Text Encoder
-        clip_model = torch.jit.load(cfg.clip_pretrain,
-                                    map_location="cpu").eval()
-        print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
-        self.backbone = build_model(clip_model.state_dict(), cfg.word_len, self.use_pretrained_clip).float()
-        
-        
         # Multi-Modal FPN
         self.neck = FPN(in_channels=cfg.fpn_in, out_channels=cfg.fpn_out)
         
@@ -52,13 +44,36 @@ class CROG(nn.Module):
             print("Disable grasp masks")
             self.proj = Projector(cfg.word_dim, cfg.vis_dim // 2, 3)
 
-    def forward(self, img, word, mask=None, grasp_qua_mask=None, grasp_sin_mask=None, grasp_cos_mask=None, grasp_wid_mask=None):
+    def _parse_forward_inputs(self, args, kwargs):
+        depth = kwargs.get("depth", None)
+        mask = kwargs.get("mask", None)
+        grasp_qua_mask = kwargs.get("grasp_qua_mask", None)
+        grasp_sin_mask = kwargs.get("grasp_sin_mask", None)
+        grasp_cos_mask = kwargs.get("grasp_cos_mask", None)
+        grasp_wid_mask = kwargs.get("grasp_wid_mask", None)
+
+        if len(args) == 1 and depth is None and mask is None:
+            depth = args[0]
+        elif len(args) >= 5:
+            mask = args[0]
+            grasp_qua_mask = args[1]
+            grasp_sin_mask = args[2]
+            grasp_cos_mask = args[3]
+            grasp_wid_mask = args[4]
+            if len(args) >= 6 and depth is None:
+                depth = args[5]
+
+        return depth, mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask
+
+    def forward(self, img, word, *args, **kwargs):
         '''
             img: b, 3, h, w
             word: b, words
             word_mask: b, words
             mask: b, 1, h, w
         '''
+        depth, mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask = self._parse_forward_inputs(args, kwargs)
+
         # padding mask used in decoder
         pad_mask = torch.zeros_like(word).masked_fill_(word == 0, 1).bool()
 
@@ -66,14 +81,7 @@ class CROG(nn.Module):
         # word: b, length, 1024
         # state: b, 1024
         vis = self.backbone.encode_image(img)
-        print ("Visual features shape 0:", vis[0].shape)
-        print ("Visual features shape 1:", vis[1].shape)
-        print ("Visual features shape 2:", vis[2].shape)
-
         word, state = self.backbone.encode_text(word)
-        
-        print ("Word features shape:", word.shape)
-        print ("State features shape:", state.shape)
 
         # b, 512, 26, 26 (C4)
         fq = self.neck(vis, state)
@@ -81,7 +89,7 @@ class CROG(nn.Module):
         
         if self.use_contrastive:
             fq = self.decoder(fq, word, pad_mask)
-            fq = fq.reshape(b, c, h, w) 
+            fq = fq.reshape(b, c, h, w)
 
         if self.use_grasp_masks:
             
