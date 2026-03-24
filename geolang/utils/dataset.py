@@ -234,7 +234,16 @@ class RefOCIDGraspDataset(Dataset):
     # @functools.lru_cache(maxsize=None)
     def _load_depth(self, path, factor=1000.):
         depth = cv2.imread(os.path.join(self.root_path, path), cv2.IMREAD_UNCHANGED) / factor
+        
+        if np.max(depth) == 0:
+            print (f"Warning: depth map {path} is empty!")
+        
+        
+        
         depth = 1 - (depth / np.max(depth))
+        
+        
+        
 
         return depth
     
@@ -1430,4 +1439,17 @@ class OCIDGraspDataset(Dataset):
                 "wid": [torch.from_numpy(x["grasp_masks"]["wid"]).float() for x in batch]
             },
         }
+        
+if __name__ == "__main__":
+    dataset = OCIDVLGDataset(root_dir="/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/HAGRID/geolang/datasets/OCID-VLG", split="train")
+    # check all depth values
+    for i in range(len(dataset)):
+        data = dataset[i]
+        depth = data["depth"]
+        if np.max(depth) == 0:
+            print(f"Depth image {i} has all zero values.")
+            break
+        else:
+            print(f"Depth image {i} has max value: {np.max(depth)}")
             
+    

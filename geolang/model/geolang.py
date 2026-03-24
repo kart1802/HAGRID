@@ -31,6 +31,9 @@ class geolang(nn.Module):
         self.use_contrastive = getattr(cfg, "use_contrastive", True)
         self.use_grasp_masks = getattr(cfg, "use_grasp_masks", True)
 
+        # one-time debug flag to print ADCI input/output shapes
+        self._adci_debug_done = False
+
         self.dggm_max_tokens = cfg.dggm_max_tokens
         self.word_dim = getattr(cfg, "word_dim", 1024)
         self.vis_dim = getattr(cfg, "vis_dim", 512)
@@ -50,13 +53,13 @@ class geolang(nn.Module):
             self.backbone.load_state_dict(state_dict, strict=False)
 
         # ---------------- TEXT ENCODER ----------------
-        print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
-        clip_model = torch.jit.load(cfg.clip_pretrain, map_location="cpu").eval()
-        self.backbone_text = build_model(
-            clip_model.state_dict(),
-            cfg.word_len,
-            self.use_pretrained_clip
-        ).float()
+        # print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
+        # clip_model = torch.jit.load(cfg.clip_pretrain, map_location="cpu").eval()
+        # self.backbone_text = build_model(
+        #     clip_model.state_dict(),
+        #     cfg.word_len,
+        #     self.use_pretrained_clip
+        # ).float()
         
 
         # ---------------- DGGM ----------------
@@ -104,7 +107,11 @@ class geolang(nn.Module):
         #     nn.ReLU(True),
         # )
 
-        self.neck = FPN(in_channels=self.fpn_in, out_channels=self.fpn_out)
+        self.neck = FPN(
+            in_channels=self.fpn_in,
+            out_channels=self.fpn_out,
+            txt_dim=self.word_dim,
+        )
 
         # Align single-embedding FPN channels to decoder/text dimension.
         if self.fpn_vis_dim != self.vis_dim:
@@ -179,9 +186,36 @@ class geolang(nn.Module):
         if not self.use_adci:
             return None
 
-        feats = [self._to_bchw(v) for v in vis[:3]] # Only use C0, C1, C2 for ADCI as per paper
-        # print ("ADCI Used")
-        return self.adci(feats)
+        # Only use C0, C1, C2 for ADCI as per paper
+        # When DGGM is disabled, these come directly from the backbone.
+        if not self._adci_debug_done:
+            try:
+                print(f"[ADCI debug] num vis features: {len(vis)}")
+                for i, v in enumerate(vis):
+                    if hasattr(v, "shape"):
+                        print(f"[ADCI debug] vis[{i}] shape before _to_bchw: {tuple(v.shape)}")
+            except Exception:
+                pass
+
+        feats = [self._to_bchw(v) for v in vis[:3]]
+
+        if not self._adci_debug_done:
+            try:
+                for i, f in enumerate(feats):
+                    print(f"[ADCI debug] feats[{i}] shape for ADCI: {tuple(f.shape)}")
+            except Exception:
+                pass
+
+        adci_out = self.adci(feats)
+
+        if not self._adci_debug_done:
+            try:
+                print(f"[ADCI debug] ADCI output shape: {tuple(adci_out.shape)}")
+            except Exception:
+                pass
+            self._adci_debug_done = True
+
+        return adci_out
 
     def _single_embedding_to_fpn_inputs(self, adci_feat):
         # ADCI output is the single source embedding (26x26). Derive v3/v4/v5 from it.
@@ -226,6 +260,8 @@ class geolang(nn.Module):
     def forward(self, img, word, *args, **kwargs):
 
         depth, mask, grasp_qua_mask, grasp_sin_mask, grasp_cos_mask, grasp_wid_mask = self._parse_forward_inputs(args, kwargs)
+        
+        
 
         pad_mask = (word == 0)
 
@@ -287,6 +323,19 @@ class geolang(nn.Module):
                     grasp_wid_loss = F.smooth_l1_loss(grasp_wid_pred, grasp_wid_mask)
 
                     total_loss = loss + grasp_qua_loss + grasp_sin_loss + grasp_cos_loss + grasp_wid_loss
+                    
+                    # Check for NaN values in losses
+                    if torch.isnan(loss) or torch.isnan(grasp_qua_loss) or torch.isnan(grasp_sin_loss) or torch.isnan(grasp_cos_loss) or torch.isnan(grasp_wid_loss):
+                        import sys
+                        print("\n⚠️ WARNING: NaN detected in loss computation!", file=sys.stderr)
+                        print(f"   loss: {loss.item()}", file=sys.stderr)
+                        print(f"   grasp_qua_loss: {grasp_qua_loss.item()}", file=sys.stderr)
+                        print(f"   grasp_sin_loss: {grasp_sin_loss.item()}", file=sys.stderr)
+                        print(f"   grasp_cos_loss: {grasp_cos_loss.item()}", file=sys.stderr)
+                        print(f"   grasp_wid_loss: {grasp_wid_loss.item()}", file=sys.stderr)
+                        print(f"   Pred stats - min: {pred[~torch.isnan(pred)].min().item() if (~torch.isnan(pred)).any() else 'all NaN'}, max: {pred[~torch.isnan(pred)].max().item() if (~torch.isnan(pred)).any() else 'all NaN'}", file=sys.stderr)
+                        print(f"   Grasp QUA pred stats - min: {grasp_qua_pred[~torch.isnan(grasp_qua_pred)].min().item() if (~torch.isnan(grasp_qua_pred)).any() else 'all NaN'}, max: {grasp_qua_pred[~torch.isnan(grasp_qua_pred)].max().item() if (~torch.isnan(grasp_qua_pred)).any() else 'all NaN'}", file=sys.stderr)
+                    
                     loss_dict = {
                         "m_ins": loss.item(),
                         "m_qua": grasp_qua_loss.item(),

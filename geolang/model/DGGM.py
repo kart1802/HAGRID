@@ -15,7 +15,8 @@ class DGGM(nn.Module):
         self.lambda2 = nn.Parameter(torch.tensor(1.0))  # spatial weight
 
         # Decay factor η ∈ (0,1)
-        self.eta = nn.Parameter(torch.tensor(0.9))
+        # self.eta = nn.Parameter(torch.tensor(0.9))
+        self.register_buffer("eta", torch.tensor(0.9)) 
 
         # Cache for spatial distances
         self.spatial_cache = {}
@@ -91,12 +92,25 @@ class DGGM(nn.Module):
         G = self.lambda1 * delta_D + self.lambda2 * delta_S
 
         # ---------------------------------------
-        # 7. Apply η^G (paper-style)
+        # 7. Apply η^G (paper-style) with numerical stability
         # ---------------------------------------
-        geom_decay = torch.pow(self.eta, G)  # (B, HW, HW)
+        # Use log-space computation to avoid underflow/overflow
+        # log(η^G) = G * log(η)
+        log_eta = torch.log(torch.clamp(self.eta, min=1e-7))  # Clamp eta to avoid log(0)
+        log_geom_decay = G * log_eta
+        
+        # Clamp to prevent extreme values
+        log_geom_decay = torch.clamp(log_geom_decay, min=-20, max=0)  # exp(-20) ≈ 2e-9, exp(0) = 1
+        
+        geom_decay = torch.exp(log_geom_decay)  # (B, HW, HW)
 
-        # Apply AFTER softmax
+        # Apply AFTER softmax and renormalize
         attn = attn * geom_decay
+        
+        # Renormalize attention to avoid vanishing gradients
+        attn_sum = attn.sum(dim=-1, keepdim=True)
+        attn_sum = torch.clamp(attn_sum, min=1e-8)  # Avoid division by zero
+        attn = attn / attn_sum
 
         # ---------------------------------------
         # 8. Final output
@@ -104,6 +118,6 @@ class DGGM(nn.Module):
         out = torch.matmul(attn, V)  # (B, HW, C)
 
         # Reshape back
-        out = out.reshape(B, H, W, C)
+        out = out.reshape(B, H, W, C)   
 
         return out

@@ -342,7 +342,8 @@ class TransformerDecoderLayer(nn.Module):
 class FPN(nn.Module):
     def __init__(self,
                  in_channels=[512, 1024, 1024],
-                 out_channels=[256, 512, 1024]):
+                 out_channels=[256, 512, 1024],
+                 txt_dim=1024):
         super(FPN, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -350,8 +351,7 @@ class FPN(nn.Module):
 
         if self.single_embedding_mode:
             vis_channels = in_channels[0]
-            # Text feature (state) is CLIP global feature in this codebase.
-            self.txt_proj = linear_layer(512, vis_channels) # Have changed to this from 1024 to 512 since we are using CLIP Vmamba B
+            self.txt_proj = linear_layer(txt_dim, vis_channels)
             self.vis_proj = conv_layer(vis_channels, vis_channels, 1, 0)
             self.norm_layer = nn.Sequential(nn.BatchNorm2d(vis_channels),
                                             nn.ReLU(True))

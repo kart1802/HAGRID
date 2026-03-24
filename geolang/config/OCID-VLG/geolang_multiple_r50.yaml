@@ -15,9 +15,9 @@ TRAIN:
   version: multiple
   input_size: 416
   word_len: 77
-  sync_bn: True # what does this do?
+  sync_bn: False # what does this do?
   # DGGM
-  use_dggm: True
+  use_dggm: False
   dggm_max_tokens: 4096
   # ADCI
   use_adci: True
@@ -42,9 +42,10 @@ TRAIN:
   lr_decay: 0.1
   lr_multi: 0.1
   weight_decay: 0.
-  max_norm: 0.
+  max_norm: 1.0
   manual_seed: 0
   print_freq: 100
+  detect_anomaly: False  # Enable torch.autograd.set_detect_anomaly for NaN debugging
   # Resume & Save
   exp_name: CROG_multiple_R50
   output_folder: exp/OCID-VLG_multiple

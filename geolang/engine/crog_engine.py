@@ -38,7 +38,7 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         prefix="Training: Epoch=[{}/{}] ".format(epoch, args.epochs))
 
     csv_path = None
-    if (not dist.is_initialized()) or dist.get_rank() == 0:
+    if (not dist.is_available()) or (not dist.is_initialized()) or dist.get_rank() == 0:
         csv_path = os.path.join(args.output_dir, "train_metrics.csv")
         file_exists = os.path.exists(csv_path)
         if (not file_exists) or os.path.getsize(csv_path) == 0:
@@ -110,7 +110,7 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         if depth is not None:
             depth = depth.cuda(non_blocking=True).unsqueeze(1)
         
-        with amp.autocast():
+        with torch.amp.autocast("cuda", enabled=(scaler is not None)):
             pred, target, loss, loss_dict = model(
                 image,
                 text,
@@ -127,20 +127,30 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
 
         # backward
         optimizer.zero_grad()
-        scaler.scale(loss).backward()
-        if args.max_norm:
-            torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
-        scaler.step(optimizer)
-        scaler.update()
+
+        if scaler is not None:
+            scaler.scale(loss).backward()
+            if args.max_norm:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            loss.backward()
+            if args.max_norm:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
+            optimizer.step()
 
         # metric
+    
         iou, pr5 = trainMetricGPU(ins_mask_pred, ins_mask_target, 0.35, 0.5)
-        dist.all_reduce(loss.detach())
-        dist.all_reduce(iou)
-        dist.all_reduce(pr5)
-        loss = loss / dist.get_world_size()
-        iou = iou / dist.get_world_size()
-        pr5 = pr5 / dist.get_world_size()
+
+        if dist.is_available() and dist.is_initialized():
+            dist.all_reduce(loss.detach())
+            dist.all_reduce(iou)
+            dist.all_reduce(pr5)
+            loss = loss / dist.get_world_size()
+            iou = iou / dist.get_world_size()
+            pr5 = pr5 / dist.get_world_size()
 
         loss_meter.update(loss.item(), image.size(0))
         ins_loss_meter.update(loss_dict["m_ins"], image.size(0))

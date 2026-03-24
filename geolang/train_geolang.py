@@ -79,6 +79,7 @@ def main():
 
 def main_worker(gpu, args):
     args.output_dir = os.path.join(args.output_folder, args.exp_name)
+    use_ddp = args.world_size > 1
 
     # local rank & global rank
     args.gpu = gpu
@@ -92,10 +93,11 @@ def main_worker(gpu, args):
                  mode="a")
 
     # dist init
-    dist.init_process_group(backend=args.dist_backend,
-                            init_method=args.dist_url,
-                            world_size=args.world_size,
-                            rank=args.rank)
+    if use_ddp:
+        dist.init_process_group(backend=args.dist_backend,
+                                init_method=args.dist_url,
+                                world_size=args.world_size,
+                                rank=args.rank)
 
     # wandb (rank-0 only)
     use_wandb = getattr(args, "use_wandb", True)
@@ -110,7 +112,8 @@ def main_worker(gpu, args):
             name=args.exp_name,
             tags=[str(args.dataset), str(args.version)],
         )
-    dist.barrier()
+    if use_ddp:
+        dist.barrier()
 
     # build model
     model, param_list = build_geolang(args)
@@ -127,6 +130,11 @@ def main_worker(gpu, args):
                             milestones=args.milestones,
                             gamma=args.lr_decay)
     scaler = amp.GradScaler()
+
+    detect_anomaly = bool(getattr(args, "detect_anomaly", False))
+    torch.autograd.set_detect_anomaly(detect_anomaly)
+    if detect_anomaly and args.rank == 0:
+        logger.warning("Autograd anomaly detection is ENABLED (debug mode, slower training).")
     
     # # resume
     # best_IoU = 0.0
@@ -155,13 +163,26 @@ def main_worker(gpu, args):
     
     
     
-    model = nn.parallel.DistributedDataParallel(model.cuda(),
-                                                device_ids=[args.gpu],
-                                                find_unused_parameters=True)
-    
-    # Set static graph to avoid "expected to mark variable ready only once" error
-    # This is needed when using gradient checkpointing (VMamba) with DDP
-    model._set_static_graph()
+    model = model.cuda()
+
+    # Ensure parameter storage/layout is canonical contiguous before DDP buckets are created.
+    # For 1x1 conv weights, ambiguous size-1 strides can still be considered contiguous;
+    # forcing contiguous_format removes reducer stride-mismatch warnings.
+    for parameter in model.parameters():
+        if parameter.requires_grad:
+            if parameter.ndim == 4:
+                parameter.data = parameter.data.detach().clone().to(memory_format=torch.contiguous_format)
+            else:
+                parameter.data = parameter.data.detach().clone().contiguous()
+
+    if use_ddp:
+        model = nn.parallel.DistributedDataParallel(model,
+                                                    device_ids=[args.gpu],
+                                                    find_unused_parameters=False,
+                                                    gradient_as_bucket_view=False)
+
+        # This is needed when using gradient checkpointing (VMamba) with DDP
+        model._set_static_graph()
 
     # build dataset
     args.batch_size = int(args.batch_size / args.ngpus_per_node)
@@ -195,12 +216,17 @@ def main_worker(gpu, args):
                       num_workers=args.workers,
                       rank=args.rank,
                       seed=args.manual_seed)
-    train_sampler = data.distributed.DistributedSampler(train_data,
-                                                        shuffle=True)
-    val_sampler = data.distributed.DistributedSampler(val_data, shuffle=False)
+    if use_ddp:
+        train_sampler = data.distributed.DistributedSampler(train_data,
+                                                            shuffle=True)
+        val_sampler = data.distributed.DistributedSampler(val_data, shuffle=False)
+    else:
+        train_sampler = None
+        val_sampler = None
+
     train_loader = data.DataLoader(train_data,
                                    batch_size=args.batch_size,
-                                   shuffle=False,
+                                   shuffle=(train_sampler is None),
                                    num_workers=args.workers,
                                    pin_memory=True,
                                    worker_init_fn=init_fn,
@@ -247,7 +273,8 @@ def main_worker(gpu, args):
         epoch_log = epoch + 1
 
         # shuffle loader
-        train_sampler.set_epoch(epoch_log)
+        if train_sampler is not None:
+            train_sampler.set_epoch(epoch_log)
 
         # train
         train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch_log,  args)
@@ -269,7 +296,7 @@ def main_worker(gpu, args):
             wandb.log(val_payload, step=epoch_log)
 
         # save model
-        if dist.get_rank() == 0:
+        if (not use_ddp) or dist.get_rank() == 0:
             lastname = os.path.join(args.output_dir, "last_model.pth")
             torch.save(
                 {
@@ -306,7 +333,7 @@ def main_worker(gpu, args):
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     logger.info('* Training time {} *'.format(total_time_str))
 
-    if dist.is_initialized():
+    if use_ddp and dist.is_initialized():
         dist.destroy_process_group()
 
 
