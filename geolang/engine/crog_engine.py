@@ -110,7 +110,7 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
         if depth is not None:
             depth = depth.cuda(non_blocking=True).unsqueeze(1)
         
-        with torch.amp.autocast("cuda", enabled=(scaler is not None)):
+        with torch.amp.autocast("cuda", enabled=True, dtype=torch.float16):
             pred, target, loss, loss_dict = model(
                 image,
                 text,
@@ -121,28 +121,100 @@ def train_with_grasp(train_loader, model, optimizer, scheduler, scaler, epoch, a
                 grasp_wid_mask=grasp_wid_mask,
                 depth=depth,
             )
+
+
+        optimizer.zero_grad(set_to_none=True)
+
+        if not torch.isfinite(loss):
+            print("Loss is NaN/Inf")
+            print(loss)
+
+            for name, p in model.named_parameters():
+                if not torch.isfinite(p).all():
+                    print("Non-finite parameter before backward:", name)
+                    raise RuntimeError(f"Bad parameter before backward: {name}")
+
+            raise RuntimeError("Non-finite loss")
+
+        scaler.scale(loss).backward()
+        scaler.unscale_(optimizer)
+
+        for name, p in model.named_parameters():
+            if p.grad is not None and not torch.isfinite(p.grad).all():
+                print("Non-finite gradient:", name)
+                raise RuntimeError(f"Bad gradient: {name}")
+
+        if args.max_norm:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
+
+        scaler.step(optimizer)
+
+        for name, p in model.named_parameters():
+            if not torch.isfinite(p).all():
+                print("Non-finite parameter after step:", name)
+                raise RuntimeError(f"Bad parameter after step: {name}")
+
+        scaler.update()
+        
         
         ins_mask_pred = pred[0]
         ins_mask_target = target[0]
+        # DEBUG START
+        # print("---- DEBUG METRICS INPUT ----")
+
+        # print("pred shape:", ins_mask_pred.shape)
+        # print("target shape:", ins_mask_target.shape)
+
+        # print("pred min/max:", ins_mask_pred.min().item(), ins_mask_pred.max().item())
+        # print("target min/max:", ins_mask_target.min().item(), ins_mask_target.max().item())
+
+        # # If logits → apply sigmoid
+        # prob = torch.sigmoid(ins_mask_pred)
+
+        # print("prob min/max:", prob.min().item(), prob.max().item())
+        # print("prob mean:", prob.mean().item())
+
+        # pred_bin = (prob > 0.35).float()
+
+        # print("pred positives:", pred_bin.sum().item())
+        # print("gt positives:", ins_mask_target.sum().item())
+
+        # print("-----------------------------")
+        # DEBUG END
 
         # backward
-        optimizer.zero_grad()
+        # optimizer.zero_grad()
+        # if scaler is not None:
+            
+        #     if not torch.isfinite(loss):
+        #         print("Loss is NaN/Inf")
+        #         print(loss)
+        #         exit()
+        #     # print ("Loss is finite")
+        #     scaler.scale(loss).backward()
+        #     # print ("balle balle")
 
-        if scaler is not None:
-            scaler.scale(loss).backward()
-            if args.max_norm:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
-            scaler.step(optimizer)
-            scaler.update()
-        else:
-            loss.backward()
-            if args.max_norm:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
-            optimizer.step()
+        #     scaler.unscale_(optimizer) # if i comment this then its the 1th AddMMBackward0 output, else Mmbackward0  in 0th output
 
-        # metric
+        #     if args.max_norm:
+        #         torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm) # max_norm
+
+        #     scaler.step(optimizer)
+        #     scaler.update()
+
+        # else:
+        #     loss.backward()
+        #     # print ("Loss backward done")
+
+        #     if args.max_norm:
+        #         torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_norm)
+
+        #     optimizer.step()
+
+                # metric
     
         iou, pr5 = trainMetricGPU(ins_mask_pred, ins_mask_target, 0.35, 0.5)
+        # print(f"raw iou = {iou.item():.6f}, raw pr5 = {pr5.item():.6f}")
 
         if dist.is_available() and dist.is_initialized():
             dist.all_reduce(loss.detach())

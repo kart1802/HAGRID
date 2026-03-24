@@ -118,9 +118,9 @@ def main_worker(gpu, args):
     # build model
     model, param_list = build_geolang(args)
     if args.sync_bn:
-        model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    logger.info(model)
-    logger.info(args)
+        model = nn.SyncBatchNorm.convert_sync_batchnorm(model) # convert all BatchNorm layers to SyncBatchNorm for distributed training. This ensures that the batch statistics are synchronized across all processes, which can lead to more stable training and better performance when using multiple GPUs. However, it may introduce some overhead due to the synchronization step, so it's typically used when training with a large batch size across multiple GPUs.
+    # logger.info(model)
+    # logger.info(args)
     
     # build optimizer & lr scheduler
     optimizer = torch.optim.Adam(param_list,
@@ -129,7 +129,14 @@ def main_worker(gpu, args):
     scheduler = MultiStepLR(optimizer,
                             milestones=args.milestones,
                             gamma=args.lr_decay)
-    scaler = amp.GradScaler()
+    # scaler = torch.cuda.amp.GradScaler(init_scale=2**10) # init_scale is the initial scale factor for the gradients. It helps to prevent underflow in the early stages of training when the gradients might be very small. You can adjust this value based on your model and dataset. A common choice is 2^10 or 2^16, but you may need to experiment to find the best value for your specific case.
+    # scaler =None
+    scaler = torch.cuda.amp.GradScaler(
+        init_scale=2**2,
+        growth_interval=20000,
+        backoff_factor=0.5,
+        growth_factor=2.0
+    )
 
     detect_anomaly = bool(getattr(args, "detect_anomaly", False))
     torch.autograd.set_detect_anomaly(detect_anomaly)
