@@ -5,7 +5,7 @@ DATA:
   val_split: val
 TRAIN:
   # Base Arch
-  word_dim: 512
+  word_dim: 1024
   vis_dim: 512
   fpn_in: [512]
   fpn_out: [512]
@@ -14,10 +14,10 @@ TRAIN:
   clip_pretrain: /scratch/tstanley/HAGRID/geolang/pretrain/RN50.pt
   version: multiple
   input_size: 416
-  word_len: 77
+  word_len: 20
   sync_bn: False # what does this do?
   # DGGM
-  use_dggm: False
+  use_dggm: True
   dggm_max_tokens: 4096
   # ADCI
   use_adci: True

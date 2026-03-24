@@ -1,6 +1,7 @@
 import torch 
 import torch.nn as nn
 import torch.nn.functional as F
+import math
 class DGGM(nn.Module):
     def __init__(self, dim):
         super().__init__()
@@ -39,6 +40,9 @@ class DGGM(nn.Module):
         return self.spatial_cache[key]
 
     def forward(self, x, depth):
+        
+        x = x.float()
+        depth = depth.float()
         """
         x: (B, H, W, C)
         depth: (B, 1, Hd, Wd)
@@ -63,6 +67,11 @@ class DGGM(nn.Module):
         # 3. Standard attention
         # ---------------------------------------
         attn = torch.matmul(Q, K.transpose(-2, -1)) / (C ** 0.5)
+        
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(C)
+
+   
+
         attn = torch.softmax(attn, dim=-1)  # (B, HW, HW)
 
         # ---------------------------------------
@@ -118,6 +127,7 @@ class DGGM(nn.Module):
         out = torch.matmul(attn, V)  # (B, HW, C)
 
         # Reshape back
-        out = out.reshape(B, H, W, C)   
+        out = out.reshape(B, H, W, C)
+ 
 
         return out

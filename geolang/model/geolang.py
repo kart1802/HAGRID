@@ -53,13 +53,13 @@ class geolang(nn.Module):
             self.backbone.load_state_dict(state_dict, strict=False)
 
         # ---------------- TEXT ENCODER ----------------
-        # print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
-        # clip_model = torch.jit.load(cfg.clip_pretrain, map_location="cpu").eval()
-        # self.backbone_text = build_model(
-        #     clip_model.state_dict(),
-        #     cfg.word_len,
-        #     self.use_pretrained_clip
-        # ).float()
+        print(f"Load pretrained CLIP: {self.use_pretrained_clip}")
+        clip_model = torch.jit.load(cfg.clip_pretrain, map_location="cpu").eval()
+        self.backbone_text = build_model(
+            clip_model.state_dict(),
+            cfg.word_len,
+            self.use_pretrained_clip
+        ).float()
         
 
         # ---------------- DGGM ----------------
@@ -163,15 +163,10 @@ class geolang(nn.Module):
         out = []
 
         for i, v in enumerate(vis):
-            v = self._to_bchw(v) 
-            B, C, H, W = v.shape
-
-            if H * W > self.dggm_max_tokens:
-                out.append(v)
-                continue
-
-            v = v.permute(0, 2, 3, 1)  # B H W C
-            v = self.dggm_blocks[i](v, depth)
+            v = self._to_bchw(v)
+            v = v.permute(0, 2, 3, 1)
+            with torch.amp.autocast("cuda", enabled=False):
+                v = self.dggm_blocks[i](v.float(), depth.float())
             v = v.permute(0, 3, 1, 2).contiguous()
 
             out.append(v)
@@ -275,7 +270,7 @@ class geolang(nn.Module):
 
         # -------- Text --------
         # print (f"word.shape: {tuple(word.shape)}")
-        word_feat, state = self.backbone.encode_text(word)
+        word_feat, state = self.backbone_text.encode_text(word)
         # print (f"word_feat shape:", tuple(word_feat.shape))
         # print (f"state shape:", tuple(state.shape))
 
