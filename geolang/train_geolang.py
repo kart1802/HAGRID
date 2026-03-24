@@ -57,15 +57,42 @@ def get_parser():
 
 @logger.catch
 def main():
-    torch.multiprocessing.set_start_method('spawn')
+    torch.multiprocessing.set_start_method('spawn', force=True)
     
     args = get_parser()
     args.manual_seed = init_random_seed(args.manual_seed)
     set_random_seed(args.manual_seed, deterministic=False)
 
+    env_world_size = int(os.environ.get("WORLD_SIZE", os.environ.get("SLURM_NTASKS", "1")))
+    args.launched_with_env = env_world_size > 1
+
+    if args.launched_with_env:
+        args.world_size = env_world_size
+        args.rank = int(os.environ.get("RANK", os.environ.get("SLURM_PROCID", "0")))
+        local_rank = int(os.environ.get("LOCAL_RANK", os.environ.get("SLURM_LOCALID", "0")))
+
+        visible_gpus = torch.cuda.device_count()
+        if visible_gpus <= 0:
+            raise RuntimeError("No CUDA GPUs visible for distributed launch.")
+
+        args.ngpus_per_node = visible_gpus
+        if visible_gpus == 1:
+            local_rank = 0
+        else:
+            local_rank = local_rank % visible_gpus
+
+        main_worker(local_rank, args)
+        return
+
     args.ngpus_per_node = torch.cuda.device_count()
+    if args.ngpus_per_node <= 0:
+        raise RuntimeError("No CUDA GPUs visible.")
     args.world_size = args.ngpus_per_node * args.world_size
     # mp.spawn(main_worker, nprocs=args.ngpus_per_node, args=(args, ), join=True)
+
+    if args.world_size <= 1:
+        main_worker(0, args)
+        return
     
     children = []
     for i in range(args.world_size):
@@ -83,7 +110,8 @@ def main_worker(gpu, args):
 
     # local rank & global rank
     args.gpu = gpu
-    args.rank = args.rank * args.ngpus_per_node + gpu
+    if not getattr(args, "launched_with_env", False):
+        args.rank = args.rank * args.ngpus_per_node + gpu
     torch.cuda.set_device(args.gpu)
 
     # logger
@@ -94,10 +122,17 @@ def main_worker(gpu, args):
 
     # dist init
     if use_ddp:
+        init_method = "env://" if getattr(args, "launched_with_env", False) else args.dist_url
         dist.init_process_group(backend=args.dist_backend,
-                                init_method=args.dist_url,
+                                init_method=init_method,
                                 world_size=args.world_size,
                                 rank=args.rank)
+
+    logger.info(
+        f"DDP launch: use_ddp={use_ddp}, rank={args.rank}, "
+        f"world_size={args.world_size}, local_gpu={args.gpu}, "
+        f"launched_with_env={getattr(args, 'launched_with_env', False)}"
+    )
 
     # wandb (rank-0 only)
     use_wandb = getattr(args, "use_wandb", True)
@@ -185,10 +220,18 @@ def main_worker(gpu, args):
         model._set_static_graph()
 
     # build dataset
-    args.batch_size = int(args.batch_size / args.ngpus_per_node)
-    args.batch_size_val = int(args.batch_size_val / args.ngpus_per_node)
-    args.workers = int(
-        (args.workers + args.ngpus_per_node - 1) / args.ngpus_per_node)
+    if use_ddp:
+        if getattr(args, "launched_with_env", False):
+            per_process_divisor = max(1, args.world_size)
+        else:
+            per_process_divisor = max(1, args.ngpus_per_node)
+    else:
+        per_process_divisor = 1
+
+    args.batch_size = max(1, int(args.batch_size / per_process_divisor))
+    args.batch_size_val = max(1, int(args.batch_size_val / per_process_divisor))
+    args.workers = int((args.workers + per_process_divisor - 1) / per_process_divisor)
+    args.workers_val = int((args.workers_val + per_process_divisor - 1) / per_process_divisor)
 
         
     train_data = OCIDVLGDataset(root_dir=args.root_path,
@@ -204,11 +247,12 @@ def main_worker(gpu, args):
     
     # get item of train_data for one sample
     
-    sample = train_data[0]
-    print ("Sample keys:", sample.keys())
-    print ("Image shape:", sample['img'].shape)
-    print ("Mask shape:", sample['mask'].shape)
-    print ("depth shape:", sample['depth'].shape)
+    if args.rank == 0:
+        sample = train_data[0]
+        print ("Sample keys:", sample.keys())
+        print ("Image shape:", sample['img'].shape)
+        print ("Mask shape:", sample['mask'].shape)
+        print ("depth shape:", sample['depth'].shape)
         
 
     # build dataloader

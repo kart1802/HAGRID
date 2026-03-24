@@ -1,0 +1,1859 @@
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+[rank0]:[W323 05:04:25.038142199 ProcessGroupNCCL.cpp:5138] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+2026-03-23 05:04:52 | INFO     | __mp_main__:119 - geolang(
+  (backbone): CLIP(
+    (visual): VSSM(
+      (patch_embed): Sequential(
+        (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (1): Permute()
+        (2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (3): Permute()
+        (4): GELU(approximate='none')
+        (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (6): Permute()
+        (7): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+      )
+      (layers): ModuleList(
+        (0): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=128, out_features=256, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256, bias=False)
+                (out_proj): Linear(in_features=256, out_features=128, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.0)
+              (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=128, out_features=512, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=512, out_features=128, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=128, out_features=256, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256, bias=False)
+                (out_proj): Linear(in_features=256, out_features=128, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.030000001192092896)
+              (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=128, out_features=512, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=512, out_features=128, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Sequential(
+            (0): Permute()
+            (1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+            (2): Permute()
+            (3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+        (1): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=256, out_features=512, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512, bias=False)
+                (out_proj): Linear(in_features=512, out_features=256, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.06000000238418579)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=256, out_features=1024, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=1024, out_features=256, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=256, out_features=512, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512, bias=False)
+                (out_proj): Linear(in_features=512, out_features=256, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.09000000357627869)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=256, out_features=1024, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=1024, out_features=256, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Sequential(
+            (0): Permute()
+            (1): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+            (2): Permute()
+            (3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+        (2): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.12000000476837158)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.15000000596046448)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (2): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.18000000715255737)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (3): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.21000000834465027)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (4): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.24000000953674316)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (5): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.27000001072883606)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (6): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.30000001192092896)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (7): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.33000001311302185)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (8): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.36000001430511475)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (9): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.39000001549720764)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (10): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.42000001668930054)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (11): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.45000001788139343)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (12): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.48000001907348633)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (13): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.5099999904632568)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (14): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.5400000214576721)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Sequential(
+            (0): Permute()
+            (1): Conv2d(512, 1024, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+            (2): Permute()
+            (3): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+        (3): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=1024, out_features=2048, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(2048, 2048, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2048, bias=False)
+                (out_proj): Linear(in_features=2048, out_features=1024, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.5700000524520874)
+              (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=1024, out_features=4096, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=4096, out_features=1024, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=1024, out_features=2048, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(2048, 2048, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2048, bias=False)
+                (out_proj): Linear(in_features=2048, out_features=1024, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.6000000238418579)
+              (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=1024, out_features=4096, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=4096, out_features=1024, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Identity()
+        )
+      )
+      (classifier): Sequential(
+        (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        (permute): Permute()
+        (avgpool): AdaptiveAvgPool2d(output_size=1)
+        (flatten): Flatten(start_dim=1, end_dim=-1)
+        (head): Identity()
+      )
+    )
+    (visual_e): VSSM(
+      (patch_embed): Sequential(
+        (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (1): Permute()
+        (2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (3): Permute()
+        (4): GELU(approximate='none')
+        (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (6): Permute()
+        (7): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+      )
+      (layers): ModuleList(
+        (0): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=128, out_features=256, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256, bias=False)
+                (out_proj): Linear(in_features=256, out_features=128, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.0)
+              (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=128, out_features=512, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=512, out_features=128, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=128, out_features=256, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256, bias=False)
+                (out_proj): Linear(in_features=256, out_features=128, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.030000001192092896)
+              (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=128, out_features=512, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=512, out_features=128, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Sequential(
+            (0): Permute()
+            (1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+            (2): Permute()
+            (3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+        (1): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=256, out_features=512, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512, bias=False)
+                (out_proj): Linear(in_features=512, out_features=256, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.06000000238418579)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=256, out_features=1024, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=1024, out_features=256, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=256, out_features=512, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512, bias=False)
+                (out_proj): Linear(in_features=512, out_features=256, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.09000000357627869)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=256, out_features=1024, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=1024, out_features=256, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Sequential(
+            (0): Permute()
+            (1): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+            (2): Permute()
+            (3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+        (2): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.12000000476837158)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.15000000596046448)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (2): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.18000000715255737)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (3): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.21000000834465027)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (4): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.24000000953674316)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (5): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.27000001072883606)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (6): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.30000001192092896)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (7): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.33000001311302185)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (8): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.36000001430511475)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (9): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.39000001549720764)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (10): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.42000001668930054)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (11): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.45000001788139343)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (12): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.48000001907348633)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (13): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.5099999904632568)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (14): VSSBlock(
+              (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=512, out_features=1024, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024, bias=False)
+                (out_proj): Linear(in_features=1024, out_features=512, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.5400000214576721)
+              (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=512, out_features=2048, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=2048, out_features=512, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Sequential(
+            (0): Permute()
+            (1): Conv2d(512, 1024, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+            (2): Permute()
+            (3): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+        (3): Sequential(
+          (blocks): Sequential(
+            (0): VSSBlock(
+              (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=1024, out_features=2048, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(2048, 2048, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2048, bias=False)
+                (out_proj): Linear(in_features=2048, out_features=1024, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.5700000524520874)
+              (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=1024, out_features=4096, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=4096, out_features=1024, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+            (1): VSSBlock(
+              (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (op): SS2D(
+                (out_norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+                (in_proj): Linear(in_features=1024, out_features=2048, bias=False)
+                (act): SiLU()
+                (conv2d): Conv2d(2048, 2048, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2048, bias=False)
+                (out_proj): Linear(in_features=2048, out_features=1024, bias=False)
+                (dropout): Identity()
+              )
+              (drop_path): timm.DropPath(0.6000000238418579)
+              (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+              (mlp): Mlp(
+                (fc1): Linear(in_features=1024, out_features=4096, bias=True)
+                (act): GELU(approximate='none')
+                (fc2): Linear(in_features=4096, out_features=1024, bias=True)
+                (drop): Dropout(p=0.0, inplace=False)
+              )
+            )
+          )
+          (downsample): Identity()
+        )
+      )
+      (classifier): Sequential(
+        (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        (permute): Permute()
+        (avgpool): AdaptiveAvgPool2d(output_size=1)
+        (flatten): Flatten(start_dim=1, end_dim=-1)
+        (head): Identity()
+      )
+    )
+    (transformer): Transformer(
+      (resblocks): Sequential(
+        (0): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (transformer_e): Transformer(
+      (resblocks): Sequential(
+        (0): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (token_embedding): Embedding(49408, 512)
+    (ln_final): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+    (token_embedding_e): Embedding(49408, 512)
+    (ln_final_e): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  )
+  (backbone_text): CLIP(
+    (visual): ModifiedResNet(
+      (conv1): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): SyncBatchNorm(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): SyncBatchNorm(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn3): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (avgpool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+      (relu): ReLU(inplace=True)
+      (layer1): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (-1): AvgPool2d(kernel_size=1, stride=1, padding=0)
+            (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (layer2): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (-1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+            (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (3): Bottleneck(
+          (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (layer3): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (-1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+            (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (3): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (4): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (5): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (layer4): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (-1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+            (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): SyncBatchNorm(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (avgpool): Identity()
+          (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): SyncBatchNorm(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (attnpool): AttentionPool2d(
+        (k_proj): Linear(in_features=2048, out_features=2048, bias=True)
+        (q_proj): Linear(in_features=2048, out_features=2048, bias=True)
+        (v_proj): Linear(in_features=2048, out_features=2048, bias=True)
+        (c_proj): Linear(in_features=2048, out_features=1024, bias=True)
+        (connect): Sequential(
+          (0): Conv2d(2048, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): SyncBatchNorm(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (transformer): Transformer(
+      (resblocks): Sequential(
+        (0): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (token_embedding): Embedding(49408, 512)
+    (ln_final): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  )
+  (dggm_blocks): ModuleList(
+    (0): DGGM(
+      (to_q): Linear(in_features=512, out_features=512, bias=True)
+      (to_k): Linear(in_features=512, out_features=512, bias=True)
+      (to_v): Linear(in_features=512, out_features=512, bias=True)
+    )
+    (1-2): 2 x DGGM(
+      (to_q): Linear(in_features=1024, out_features=1024, bias=True)
+      (to_k): Linear(in_features=1024, out_features=1024, bias=True)
+      (to_v): Linear(in_features=1024, out_features=1024, bias=True)
+    )
+  )
+  (adci): ADCI(
+    (align_convs): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (1-2): 2 x Sequential(
+        (0): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+    )
+    (gating_mlps): ModuleList(
+      (0): Sequential(
+        (0): Linear(in_features=512, out_features=128, bias=True)
+        (1): ReLU(inplace=True)
+        (2): Linear(in_features=128, out_features=1, bias=True)
+      )
+      (1-2): 2 x Sequential(
+        (0): Linear(in_features=1024, out_features=256, bias=True)
+        (1): ReLU(inplace=True)
+        (2): Linear(in_features=256, out_features=1, bias=True)
+      )
+    )
+    (final_mlp): Sequential(
+      (0): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+    )
+  )
+  (adci_to_v4): Sequential(
+    (0): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+  )
+  (neck): FPN(
+    (txt_proj): Sequential(
+      (0): Linear(in_features=512, out_features=512, bias=False)
+      (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (vis_proj): Sequential(
+      (0): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (norm_layer): Sequential(
+      (0): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (1): ReLU(inplace=True)
+    )
+    (coordconv): Sequential(
+      (0): CoordConv(
+        (conv1): Sequential(
+          (0): Conv2d(514, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (1): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+    )
+  )
+  (fpn_to_decoder): Identity()
+  (decoder): TransformerDecoder(
+    (layers): ModuleList(
+      (0-2): 3 x TransformerDecoderLayer(
+        (self_attn_norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (cross_attn_norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+        )
+        (multihead_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+        )
+        (ffn): Sequential(
+          (0): Linear(in_features=512, out_features=2048, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Dropout(p=0.1, inplace=False)
+          (3): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+          (4): Linear(in_features=2048, out_features=512, bias=True)
+        )
+        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+      )
+    )
+    (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  )
+  (proj): MultiTaskProjector(
+    (vis): Sequential(
+      (0): Upsample(scale_factor=2.0, mode='bilinear')
+      (1): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (2): Upsample(scale_factor=2.0, mode='bilinear')
+      (3): Sequential(
+        (0): Conv2d(512, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (4): Conv2d(256, 1280, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (txt): Linear(in_features=512, out_features=2305, bias=True)
+  )
+)
+2026-03-23 05:04:52 | INFO     | __mp_main__:120 - adci_align_channels: 512
+adci_groups: 1
+adci_out_channels: 512
+base_lr: 0.0001
+batch_size: 24
+batch_size_val: 24
+clip_pretrain: /scratch/tstanley/HAGRID/geolang/pretrain/RN50.pt
+dataset: OCID-VLG
+dggm_max_tokens: 4096
+dim_ffn: 2048
+dist_backend: nccl
+dist_url: tcp://localhost:3681
+dropout: 0.1
+epochs: 50
+evaluate: True
+exp_name: CROG_multiple_R50
+fpn_in: [512]
+fpn_out: [512]
+gpu: 0
+input_size: 416
+intermediate: False
+lr_decay: 0.1
+lr_multi: 0.1
+mamba_clip_pretrain: /scratch/tstanley/HAGRID/VMamba_B_clip.pt
+manual_seed: 0
+max_norm: 0.0
+milestones: [35]
+multiprocessing_distributed: True
+ngpus_per_node: 1
+num_head: 8
+num_layers: 3
+output_dir: exp/OCID-VLG_multiple/CROG_multiple_R50
+output_folder: exp/OCID-VLG_multiple
+print_freq: 100
+rank: 0
+resume: None
+root_path: ./datasets/OCID-VLG
+save_freq: 1
+start_epoch: 0
+sync_bn: True
+test_split: val-test
+train_split: train
+use_adci: True
+use_contrastive: True
+use_dggm: True
+use_grasp_masks: True
+use_pretrained_clip: True
+use_pretrained_mamba_clip: True
+use_wandb: True
+val_split: val
+version: multiple
+vis_dim: 512
+visualize: False
+wandb_mode: offline
+wandb_project: Geolang
+weight: None
+weight_decay: 0.0
+word_dim: 512
+word_len: 77
+workers: 2
+workers_val: 2
+world_size: 1
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+2026-03-23 05:07:43 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 100/2634]  Batch=0.87 (1.64)  Data=0.00 (0.47)  Lr=0.000100  Loss=0.2609 (3.3620)  Loss_ins=0.1149 (0.3230)  Loss_qua=0.0287 (0.7232)  Loss_sin=0.0276 (0.7434)  Loss_cos=0.0600 (0.9333)  Loss_wid=0.0298 (0.6390)  IoU=0.00 (0.16)  Prec@50=0.00 (0.00)
+2026-03-23 05:09:09 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 200/2634]  Batch=0.73 (1.25)  Data=0.00 (0.23)  Lr=0.000100  Loss=0.1519 (1.7716)  Loss_ins=0.0975 (0.2128)  Loss_qua=0.0134 (0.3710)  Loss_sin=0.0068 (0.3816)  Loss_cos=0.0181 (0.4784)  Loss_wid=0.0162 (0.3278)  IoU=0.00 (0.08)  Prec@50=0.00 (0.00)
+2026-03-23 05:10:36 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 300/2634]  Batch=0.85 (1.12)  Data=0.00 (0.16)  Lr=0.000100  Loss=0.1070 (1.2254)  Loss_ins=0.0830 (0.1737)  Loss_qua=0.0060 (0.2503)  Loss_sin=0.0055 (0.2570)  Loss_cos=0.0074 (0.3231)  Loss_wid=0.0050 (0.2213)  IoU=0.00 (0.06)  Prec@50=0.00 (0.00)
+2026-03-23 05:12:01 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 400/2634]  Batch=0.89 (1.05)  Data=0.00 (0.12)  Lr=0.000100  Loss=0.1038 (0.9482)  Loss_ins=0.0737 (0.1522)  Loss_qua=0.0057 (0.1895)  Loss_sin=0.0057 (0.1943)  Loss_cos=0.0101 (0.2448)  Loss_wid=0.0086 (0.1674)  IoU=0.00 (0.09)  Prec@50=0.00 (0.02)
+2026-03-23 05:13:27 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 500/2634]  Batch=0.87 (1.01)  Data=0.00 (0.09)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.59 (0.25)  Prec@50=0.00 (0.02)
+2026-03-23 05:14:51 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 600/2634]  Batch=0.84 (0.99)  Data=0.00 (0.08)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.62 (0.46)  Prec@50=0.00 (0.01)
+2026-03-23 05:16:16 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 700/2634]  Batch=0.89 (0.97)  Data=0.00 (0.07)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.40 (0.61)  Prec@50=0.00 (0.01)
+2026-03-23 05:17:40 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 800/2634]  Batch=0.85 (0.95)  Data=0.00 (0.06)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.60 (0.73)  Prec@50=0.00 (0.01)
+2026-03-23 05:19:04 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [ 900/2634]  Batch=0.84 (0.94)  Data=0.00 (0.05)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.69 (0.81)  Prec@50=0.00 (0.01)
+2026-03-23 05:20:28 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1000/2634]  Batch=0.84 (0.93)  Data=0.00 (0.05)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.27 (0.88)  Prec@50=0.00 (0.01)
+2026-03-23 05:21:53 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1100/2634]  Batch=0.85 (0.92)  Data=0.00 (0.04)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.48 (0.93)  Prec@50=0.00 (0.01)
+2026-03-23 05:23:18 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1200/2634]  Batch=0.87 (0.91)  Data=0.00 (0.04)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.40 (0.98)  Prec@50=0.00 (0.01)
+2026-03-23 05:24:42 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1300/2634]  Batch=0.87 (0.91)  Data=0.00 (0.04)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.19 (1.01)  Prec@50=0.00 (0.01)
+2026-03-23 05:26:07 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1400/2634]  Batch=0.88 (0.91)  Data=0.00 (0.04)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.62 (1.05)  Prec@50=0.00 (0.01)
+2026-03-23 05:27:32 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1500/2634]  Batch=0.84 (0.90)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.68 (1.08)  Prec@50=0.00 (0.01)
+2026-03-23 05:28:57 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1600/2634]  Batch=0.84 (0.90)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.34 (1.10)  Prec@50=0.00 (0.01)
+2026-03-23 05:30:21 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1700/2634]  Batch=0.83 (0.89)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.66 (1.12)  Prec@50=0.00 (0.00)
+2026-03-23 05:31:48 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1800/2634]  Batch=0.85 (0.89)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.40 (1.14)  Prec@50=0.00 (0.00)
+2026-03-23 05:33:12 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [1900/2634]  Batch=0.83 (0.89)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.37 (1.16)  Prec@50=0.00 (0.00)
+2026-03-23 05:34:36 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2000/2634]  Batch=0.86 (0.89)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.58 (1.17)  Prec@50=0.00 (0.00)
+2026-03-23 05:36:00 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2100/2634]  Batch=0.85 (0.89)  Data=0.00 (0.03)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.38 (1.19)  Prec@50=0.00 (0.00)
+2026-03-23 05:37:24 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2200/2634]  Batch=0.87 (0.88)  Data=0.00 (0.02)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.41 (1.20)  Prec@50=0.00 (0.00)
+2026-03-23 05:38:49 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2300/2634]  Batch=0.83 (0.88)  Data=0.00 (0.02)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.42 (1.22)  Prec@50=0.00 (0.00)
+2026-03-23 05:40:13 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2400/2634]  Batch=0.84 (0.88)  Data=0.00 (0.02)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.34 (1.23)  Prec@50=0.00 (0.00)
+2026-03-23 05:41:37 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2500/2634]  Batch=0.83 (0.88)  Data=0.00 (0.02)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.28 (1.24)  Prec@50=0.00 (0.00)
+2026-03-23 05:43:02 | INFO     | utils.misc:107 - Training: Epoch=[1/50] [2600/2634]  Batch=0.85 (0.88)  Data=0.00 (0.02)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.36 (1.25)  Prec@50=0.00 (0.00)
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+2026-03-23 05:53:16 | INFO     | engine.crog_engine:378 - Evaluation: Epoch=[1/50]  IoU=0.00  J_index@1: 0.00  J_index@5: 0.00  Pr@50: 0.00  Pr@60: 0.00  Pr@70: 0.00  Pr@80: 0.00  Pr@90: 0.00  
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+2026-03-23 05:57:27 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 100/2634]  Batch=0.83 (2.29)  Data=0.00 (1.45)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=2.06 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 05:58:48 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 200/2634]  Batch=0.83 (1.55)  Data=0.00 (0.72)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.66 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:00:10 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 300/2634]  Batch=0.83 (1.31)  Data=0.00 (0.48)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.51 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:01:34 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 400/2634]  Batch=0.84 (1.19)  Data=0.00 (0.36)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.41 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:02:58 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 500/2634]  Batch=0.84 (1.12)  Data=0.00 (0.29)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.99 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 06:04:20 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 600/2634]  Batch=0.83 (1.07)  Data=0.00 (0.24)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.66 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:05:43 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 700/2634]  Batch=0.85 (1.04)  Data=0.00 (0.21)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.47 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:07:05 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 800/2634]  Batch=0.82 (1.01)  Data=0.00 (0.18)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.50 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:08:28 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [ 900/2634]  Batch=0.84 (0.99)  Data=0.00 (0.16)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.79 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:09:52 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1000/2634]  Batch=0.83 (0.97)  Data=0.00 (0.15)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.46 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:11:16 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1100/2634]  Batch=0.84 (0.96)  Data=0.00 (0.13)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.59 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:12:37 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1200/2634]  Batch=0.82 (0.95)  Data=0.00 (0.12)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.37 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:13:57 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1300/2634]  Batch=0.83 (0.94)  Data=0.00 (0.11)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=0.89 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:15:20 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1400/2634]  Batch=0.73 (0.93)  Data=0.00 (0.10)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.53 (1.48)  Prec@50=0.00 (0.00)
+2026-03-23 06:16:44 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1500/2634]  Batch=0.83 (0.92)  Data=0.00 (0.10)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.65 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:18:05 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1600/2634]  Batch=0.71 (0.92)  Data=0.00 (0.09)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=2.02 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:19:28 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1700/2634]  Batch=0.83 (0.91)  Data=0.00 (0.09)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.44 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:20:49 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1800/2634]  Batch=0.85 (0.91)  Data=0.00 (0.08)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.59 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:22:13 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [1900/2634]  Batch=0.84 (0.90)  Data=0.00 (0.08)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.56 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:23:36 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2000/2634]  Batch=0.85 (0.90)  Data=0.00 (0.07)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.16 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:24:58 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2100/2634]  Batch=0.83 (0.90)  Data=0.00 (0.07)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.62 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:26:20 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2200/2634]  Batch=0.84 (0.89)  Data=0.00 (0.07)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.57 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:27:43 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2300/2634]  Batch=0.83 (0.89)  Data=0.00 (0.06)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.63 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:29:06 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2400/2634]  Batch=0.78 (0.89)  Data=0.00 (0.06)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.43 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:30:27 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2500/2634]  Batch=0.86 (0.88)  Data=0.00 (0.06)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.32 (1.49)  Prec@50=0.00 (0.00)
+2026-03-23 06:31:50 | INFO     | utils.misc:107 - Training: Epoch=[2/50] [2600/2634]  Batch=0.85 (0.88)  Data=0.00 (0.06)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.40 (1.49)  Prec@50=0.00 (0.00)
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+2026-03-23 06:41:45 | INFO     | engine.crog_engine:378 - Evaluation: Epoch=[2/50]  IoU=0.00  J_index@1: 0.00  J_index@5: 0.00  Pr@50: 0.00  Pr@60: 0.00  Pr@70: 0.00  Pr@80: 0.00  Pr@90: 0.00  
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+2026-03-23 06:45:58 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 100/2634]  Batch=0.85 (2.23)  Data=0.00 (1.44)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.90 (1.52)  Prec@50=0.00 (0.00)
+2026-03-23 06:47:20 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 200/2634]  Batch=0.83 (1.53)  Data=0.00 (0.72)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.30 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 06:48:42 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 300/2634]  Batch=0.83 (1.29)  Data=0.00 (0.48)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.41 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 06:50:04 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 400/2634]  Batch=0.84 (1.17)  Data=0.00 (0.36)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.35 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 06:51:28 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 500/2634]  Batch=0.84 (1.11)  Data=0.00 (0.29)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.47 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 06:52:50 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 600/2634]  Batch=0.73 (1.06)  Data=0.00 (0.24)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.60 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 06:54:13 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 700/2634]  Batch=0.74 (1.03)  Data=0.00 (0.21)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.63 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 06:55:35 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 800/2634]  Batch=0.84 (1.00)  Data=0.00 (0.18)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=0.99 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 06:56:58 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [ 900/2634]  Batch=0.72 (0.98)  Data=0.00 (0.16)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.49 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 06:58:19 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [1000/2634]  Batch=0.71 (0.96)  Data=0.00 (0.15)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.44 (1.51)  Prec@50=0.00 (0.00)
+2026-03-23 06:59:42 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [1100/2634]  Batch=0.83 (0.95)  Data=0.00 (0.13)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.59 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 07:01:05 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [1200/2634]  Batch=0.70 (0.94)  Data=0.00 (0.12)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.57 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 07:02:29 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [1300/2634]  Batch=0.71 (0.93)  Data=0.00 (0.11)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.71 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 07:03:51 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [1400/2634]  Batch=0.87 (0.93)  Data=0.00 (0.10)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.31 (1.50)  Prec@50=0.00 (0.00)
+2026-03-23 07:05:13 | INFO     | utils.misc:107 - Training: Epoch=[3/50] [1500/2634]  Batch=0.83 (0.92)  Data=0.00 (0.10)  Lr=0.000100  Loss=nan (nan)  Loss_ins=nan (nan)  Loss_qua=nan (nan)  Loss_sin=nan (nan)  Loss_cos=nan (nan)  Loss_wid=nan (nan)  IoU=1.70 (1.50)  Prec@50=0.00 (0.00)
+srun: Job step aborted: Waiting up to 122 seconds for job step to finish.
+slurmstepd: error: *** STEP 9430931.0 ON gpu019 CANCELLED AT 2026-03-23T07:05:24 ***
+slurmstepd: error: *** JOB 9430931 ON gpu019 CANCELLED AT 2026-03-23T07:05:24 ***
