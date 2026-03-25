@@ -321,6 +321,7 @@ def validate_with_grasp(val_loader, model, epoch, args):
         inverse_matrix = data["inverse"]
         ori_sizes = data["ori_size"]
         grasp_targets = data["grasps"]
+        depth = data["depth"],
         
         image = image.cuda(non_blocking=True)
         text = text.cuda(non_blocking=True)
@@ -329,7 +330,9 @@ def validate_with_grasp(val_loader, model, epoch, args):
         grasp_sin_mask = grasp_sin_mask.cuda(non_blocking=True).unsqueeze(1)
         grasp_cos_mask = grasp_cos_mask.cuda(non_blocking=True).unsqueeze(1)
         grasp_wid_mask = grasp_wid_mask.cuda(non_blocking=True).unsqueeze(1)
-        
+
+        if depth is not None:
+            depth = depth.cuda(non_blocking=True).unsqueeze(1)        
         # inference & get predictions from model
         pred, target = model(
             image,
@@ -339,6 +342,7 @@ def validate_with_grasp(val_loader, model, epoch, args):
             grasp_sin_mask=grasp_sin_mask,
             grasp_cos_mask=grasp_cos_mask,
             grasp_wid_mask=grasp_wid_mask,
+            depth=depth
         )
         
         # predictions
@@ -492,6 +496,7 @@ def validate_without_grasp(val_loader, model, epoch, args):
         inverse_matrix = data["inverse"]
         ori_sizes = data["ori_size"]
         grasp_targets = data["grasps"]
+        depth=data["depth"]
         
         image = image.cuda(non_blocking=True)
         text = text.cuda(non_blocking=True)
@@ -500,7 +505,11 @@ def validate_without_grasp(val_loader, model, epoch, args):
         grasp_sin_mask = grasp_sin_mask.cuda(non_blocking=True).unsqueeze(1)
         grasp_cos_mask = grasp_cos_mask.cuda(non_blocking=True).unsqueeze(1)
         grasp_wid_mask = grasp_wid_mask.cuda(non_blocking=True).unsqueeze(1)
-        
+
+
+        if depth is not None:
+            depth = depth.cuda(non_blocking=True).unsqueeze(1)
+
         # inference & get predictions from model
         pred, ins_mask_targets = model(
             image,
@@ -510,6 +519,7 @@ def validate_without_grasp(val_loader, model, epoch, args):
             grasp_sin_mask=grasp_sin_mask,
             grasp_cos_mask=grasp_cos_mask,
             grasp_wid_mask=grasp_wid_mask,
+            depth=depth,
         )
 
         # Interpolate the predicted ins mask to the same size of input image
@@ -600,6 +610,7 @@ def inference_with_grasp(test_loader, model, args):
         grasp_targets = data["grasps"]
         sentences = data["sentence"]
         img_paths = data["img_path"]
+        depth=data["depth"]
         
         image = image.cuda(non_blocking=True)
         text = text.cuda(non_blocking=True)
@@ -608,7 +619,10 @@ def inference_with_grasp(test_loader, model, args):
         grasp_sin_mask = grasp_sin_mask.cuda(non_blocking=True).unsqueeze(1)
         grasp_cos_mask = grasp_cos_mask.cuda(non_blocking=True).unsqueeze(1)
         grasp_wid_mask = grasp_wid_mask.cuda(non_blocking=True).unsqueeze(1)
-        
+
+        if depth is not None:
+            depth = depth.cuda(non_blocking=True).unsqueeze(1)
+
         # inference & get predictions from model
         pred, target = model(
             image,
@@ -618,6 +632,7 @@ def inference_with_grasp(test_loader, model, args):
             grasp_sin_mask=grasp_sin_mask,
             grasp_cos_mask=grasp_cos_mask,
             grasp_wid_mask=grasp_wid_mask,
+            depth=depth,
         )
         
         # predictions
