@@ -10,7 +10,7 @@
 #SBATCH --error=logs/geolang_%j.err
 
 mkdir -p logs
-cd /scratch/tstanley/HAGRID/geolang || exit 1
+cd /scratch/ysurange/cv/HAGRID/geolang || exit 1
 
 # =============================
 # Safety + debug info
@@ -22,8 +22,13 @@ echo "Working dir: $(pwd)"
 # =============================
 # Activate conda environment
 # =============================
-source /home/tstanley/miniconda3/etc/profile.d/conda.sh
-conda activate vmamba_copy
+# Load modules
+module load 2025
+module load miniconda3
+
+# Initialize conda
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate /scratch/ysurange/conda_envs/vmamba_new
 
 # Verify python + torch
 echo "Python path: $(which python)"
