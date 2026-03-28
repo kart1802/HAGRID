@@ -358,8 +358,29 @@ class FPN(nn.Module):
             self.coordconv = nn.Sequential(
                 CoordConv(vis_channels, vis_channels, 3, 1),
                 conv_layer(vis_channels, vis_channels, 3, 1))
+        else:
+            # CROG-style multi-scale FPN path for [v3, v4, v5] inputs.
+            self.txt_proj = linear_layer(in_channels[2], out_channels[2])
+            self.f1_v_proj = conv_layer(in_channels[2], out_channels[2], 1, 0)
+            self.norm_layer = nn.Sequential(nn.BatchNorm2d(out_channels[2]),
+                                            nn.ReLU(True))
+            self.f2_v_proj = conv_layer(in_channels[1], out_channels[1], 3, 1)
+            self.f2_cat = conv_layer(out_channels[2] + out_channels[1],
+                                     out_channels[1], 1, 0)
+            self.f3_v_proj = conv_layer(in_channels[0], out_channels[0], 3, 1)
+            self.f3_cat = conv_layer(out_channels[0] + out_channels[1],
+                                     out_channels[1], 1, 0)
+            self.f4_proj5 = conv_layer(out_channels[2], out_channels[1], 3, 1)
+            self.f4_proj4 = conv_layer(out_channels[1], out_channels[1], 3, 1)
+            self.f4_proj3 = conv_layer(out_channels[1], out_channels[1], 3, 1)
+            self.aggr = conv_layer(3 * out_channels[1], out_channels[1], 1, 0)
+            self.coordconv = nn.Sequential(
+                CoordConv(out_channels[1], out_channels[1], 3, 1),
+                conv_layer(out_channels[1], out_channels[1], 3, 1))
 
     def forward(self, imgs, state):
+        state = torch.nan_to_num(state, nan=0.0, posinf=1e4, neginf=-1e4)
+
         if self.single_embedding_mode:
             # Single vision embedding mode: integrate language into ADCI feature while
             # preserving BCHW shape.
@@ -369,3 +390,27 @@ class FPN(nn.Module):
             vis = self.norm_layer(vis * txt_gate)
             vis = self.coordconv(vis)
             return vis
+
+        # CROG-style multi-scale mode.
+        v3, v4, v5 = imgs
+        state = self.txt_proj(state).unsqueeze(-1).unsqueeze(-1)
+        f5 = self.f1_v_proj(v5)
+        f5 = self.norm_layer(f5 * state)
+
+        f4 = self.f2_v_proj(v4)
+        f5_ = F.interpolate(f5, scale_factor=2, mode='bilinear')
+        f4 = self.f2_cat(torch.cat([f4, f5_], dim=1))
+
+        f3 = self.f3_v_proj(v3)
+        f3 = F.avg_pool2d(f3, 2, 2)
+        f3 = self.f3_cat(torch.cat([f3, f4], dim=1))
+
+        fq5 = self.f4_proj5(f5)
+        fq4 = self.f4_proj4(f4)
+        fq3 = self.f4_proj3(f3)
+        fq5 = F.interpolate(fq5, scale_factor=2, mode='bilinear')
+
+        fq = torch.cat([fq3, fq4, fq5], dim=1)
+        fq = self.aggr(fq)
+        fq = self.coordconv(fq)
+        return fq

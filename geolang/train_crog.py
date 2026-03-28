@@ -27,8 +27,8 @@ from torch.optim.lr_scheduler import MultiStepLR
 import utils.config as config
 import wandb
 from utils.dataset import OCIDVLGDataset
-from engine.crog_engine import train_with_grasp, validate_with_grasp, validate_without_grasp
-from model import build_crog
+from engine.crog_engine import train_with_grasp, validate_with_grasp, validate_without_grasp                
+from model import build_geolang
 from utils.misc import (init_random_seed, set_random_seed, setup_logger,
                         worker_init_fn)
 
@@ -66,7 +66,7 @@ def main():
 
     args.ngpus_per_node = torch.cuda.device_count()
     args.world_size = args.ngpus_per_node * args.world_size
-    # mp.spawn(main_worker, nprocs=args.ngpus_per_node, args=(args, ), join=True)
+    # mp.spawn(main_worker, nprocs=args.ngpus_per_node, args=(args, ), join=True)                                  
     
     children = []
     for i in range(args.world_size):
@@ -109,7 +109,7 @@ def main_worker(gpu, args):
     dist.barrier()
 
     # build model
-    model, param_list = build_crog(args)
+    model, param_list = build_geolang(args)
     if args.sync_bn:
         model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
     logger.info(model)
@@ -217,14 +217,54 @@ def main_worker(gpu, args):
             map_location = {'cuda:%d' % 0: 'cuda:%d' % gpu}
             checkpoint = torch.load(
                 args.resume, map_location=map_location)
-            args.start_epoch = checkpoint['epoch']
-            best_IoU = checkpoint["best_iou"]
-            best_j_index = checkpoint["best_j_index"]
-            model.load_state_dict(checkpoint['state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            scheduler.load_state_dict(checkpoint['scheduler'])
-            logger.info("=> loaded checkpoint '{}' (epoch {})".format(
-                args.resume, checkpoint['epoch']))
+            ckpt_state = checkpoint['state_dict']
+            model_state = model.state_dict()
+
+            filtered_state = OrderedDict()
+            shape_mismatch = []
+            unexpected = []
+
+            for k, v in ckpt_state.items():
+                if k not in model_state:
+                    unexpected.append(k)
+                    continue
+                if model_state[k].shape != v.shape:
+                    shape_mismatch.append(
+                        f"{k}: ckpt={tuple(v.shape)} model={tuple(model_state[k].shape)}")
+                    continue
+                filtered_state[k] = v
+
+            incompatible = model.load_state_dict(filtered_state, strict=False)
+
+            # Full resume only when state_dict is fully compatible.
+            can_resume_training_state = (
+                len(shape_mismatch) == 0
+                and len(unexpected) == 0
+                and len(incompatible.missing_keys) == 0
+                and len(incompatible.unexpected_keys) == 0
+            )
+
+            if can_resume_training_state:
+                args.start_epoch = checkpoint.get('epoch', args.start_epoch)
+                best_IoU = checkpoint.get("best_iou", best_IoU)
+                best_j_index = checkpoint.get("best_j_index", best_j_index)
+                optimizer.load_state_dict(checkpoint['optimizer'])
+                scheduler.load_state_dict(checkpoint['scheduler'])
+                logger.info("=> loaded checkpoint '{}' (epoch {})".format(
+                    args.resume, checkpoint.get('epoch', -1)))
+            else:
+                logger.warning(
+                    "=> partial model load from checkpoint due to incompatibilities; "
+                    "optimizer/scheduler not resumed.")
+                logger.warning(
+                    f"=> skipped keys: shape_mismatch={len(shape_mismatch)}, "
+                    f"checkpoint_only={len(unexpected)}, model_only={len(incompatible.missing_keys)}")
+                if shape_mismatch:
+                    logger.warning("=> first shape mismatches: {}".format(shape_mismatch[:5]))
+                if unexpected:
+                    logger.warning("=> first checkpoint-only keys: {}".format(unexpected[:5]))
+                if incompatible.missing_keys:
+                    logger.warning("=> first model-only keys: {}".format(incompatible.missing_keys[:5]))
             
             del checkpoint
             torch.cuda.empty_cache()

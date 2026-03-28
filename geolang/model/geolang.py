@@ -39,8 +39,20 @@ class geolang(nn.Module):
         self.vis_dim = getattr(cfg, "vis_dim", 512)
         self.fpn_in = getattr(cfg, "fpn_in", [128])
         self.fpn_out = getattr(cfg, "fpn_out", [128])
-        self.fpn_vis_dim = self.fpn_out[0]
         self.DGGM_input_channels = [512, 1024, 1024]
+
+        # When ADCI is disabled, use CROG-style multi-scale neck defaults unless
+        # a multi-scale config is already provided.
+        if (not self.use_adci) and len(self.fpn_in) == 1:
+            self.fpn_in = [512, 1024, 1024]
+            self.fpn_out = [256, 512, 1024]
+
+        # FPN output channel is index 0 in single-embedding mode and index 1 in
+        # CROG-style multi-scale mode.
+        if len(self.fpn_out) == 1:
+            self.fpn_vis_dim = self.fpn_out[0]
+        else:
+            self.fpn_vis_dim = self.fpn_out[1]
 
         # ---------------- BACKBONE ----------------
         print(f"Load pretrained Mamba-CLIP: {self.use_pretrained_mamba_clip}")
@@ -282,22 +294,26 @@ class geolang(nn.Module):
 
         if adci_out is not None:
             fpn_inputs = self._single_embedding_to_fpn_inputs(adci_out)
-            fq = self.neck(fpn_inputs, state)
-            fq = self.fpn_to_decoder(fq)
-            # print (f"FPN output shape:", tuple(fq.shape)) # matched with CROG
-            b, c, h, w = fq.size()
+        else:
+            # ADCI disabled: use CROG-style multi-scale backbone features.
+            fpn_inputs = [self._to_bchw(v) for v in vis[:3]]
 
-            if self.use_contrastive and self.decoder is not None:
-                fq = self.decoder(fq, word_feat, pad_mask)
-                # print (f"Decoder output shape:", tuple(fq.shape))
-                if isinstance(fq, list):
-                    fq = fq[-1]
-                fq = fq.reshape(b, c, h, w)
+        fq = self.neck(fpn_inputs, state)
+        fq = self.fpn_to_decoder(fq)
+        # print (f"FPN output shape:", tuple(fq.shape)) # matched with CROG
+        b, c, h, w = fq.size()
 
-            if self.use_grasp_masks:
-                pred, grasp_qua_pred, grasp_sin_pred, grasp_cos_pred, grasp_wid_pred = self.proj(fq, state)
-            else:
-                pred = self.proj(fq, state)
+        if self.use_contrastive and self.decoder is not None:
+            fq = self.decoder(fq, word_feat, pad_mask)
+            # print (f"Decoder output shape:", tuple(fq.shape))
+            if isinstance(fq, list):
+                fq = fq[-1]
+            fq = fq.reshape(b, c, h, w)
+
+        if self.use_grasp_masks:
+            pred, grasp_qua_pred, grasp_sin_pred, grasp_cos_pred, grasp_wid_pred = self.proj(fq, state)
+        else:
+            pred = self.proj(fq, state)
 
         # CROG-compatible training/eval outputs when masks are provided.
         if mask is not None:
