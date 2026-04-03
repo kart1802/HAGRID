@@ -3,24 +3,28 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 class DGGM(nn.Module):
-    def __init__(self, dim):
+    def __init__(self, dim, normalize_after_reweight=False):
         super().__init__()
 
         # QKV projections
         self.to_q = nn.Linear(dim, dim)
         self.to_k = nn.Linear(dim, dim)
         self.to_v = nn.Linear(dim, dim)
+        self.normalize_after_reweight = normalize_after_reweight
 
         # Learnable weights for geometry prior
-        self.lambda1 = nn.Parameter(torch.tensor(1.0))  # depth weight
-        self.lambda2 = nn.Parameter(torch.tensor(1.0))  # spatial weight
+        self.lambda1 = nn.Parameter(torch.tensor(1.2, dtype=torch.float32))
+        self.lambda2 = nn.Parameter(torch.tensor(0.8, dtype=torch.float32))
 
         # Decay factor η ∈ (0,1)
         # self.eta = nn.Parameter(torch.tensor(0.9))
-        self.register_buffer("eta", torch.tensor(0.9)) 
+        self.register_buffer("eta", torch.tensor(0.75)) 
 
         # Cache for spatial distances
         self.spatial_cache = {}
+
+        # Forward-call counter for lightweight periodic debug logging.
+        self.register_buffer("_debug_step", torch.zeros((), dtype=torch.long), persistent=False)
 
     def get_spatial(self, H, W, device):
         """
@@ -101,25 +105,30 @@ class DGGM(nn.Module):
         G = self.lambda1 * delta_D + self.lambda2 * delta_S
 
         # ---------------------------------------
-        # 7. Apply η^G (paper-style) with numerical stability
+        # 7. Apply η^G (paper-style)
         # ---------------------------------------
-        # Use log-space computation to avoid underflow/overflow
-        # log(η^G) = G * log(η)
-        log_eta = torch.log(torch.clamp(self.eta, min=1e-7))  # Clamp eta to avoid log(0)
-        log_geom_decay = G * log_eta
-        
-        # Clamp to prevent extreme values
-        log_geom_decay = torch.clamp(log_geom_decay, min=-20, max=0)  # exp(-20) ≈ 2e-9, exp(0) = 1
-        
-        geom_decay = torch.exp(log_geom_decay)  # (B, HW, HW)
+        geom_decay = self.eta ** G  # (B, HW, HW)
 
         # Apply AFTER softmax and renormalize
         attn = attn * geom_decay
         
-        # Renormalize attention to avoid vanishing gradients
-        attn_sum = attn.sum(dim=-1, keepdim=True)
-        attn_sum = torch.clamp(attn_sum, min=1e-8)  # Avoid division by zero
-        attn = attn / attn_sum
+        # # # Renormalize attention to avoid vanishing gradients
+        if self.normalize_after_reweight:
+            
+            attn_sum = attn.sum(dim=-1, keepdim=True)
+            attn_sum = torch.clamp(attn_sum, min=1e-8)  # Avoid division by zero
+            attn = attn / attn_sum
+        
+        # Print lambda values and an attention sample every 1000 forward calls.
+        self._debug_step += 1
+        if (self._debug_step % 1000).item() == 0:
+            attn_sample = attn[0, :2, :5].detach().cpu().tolist()
+            print(
+                f"[DGGM debug] step={int(self._debug_step.item())} "
+                f"lambda1={float(self.lambda1.detach().item()):.4f} "
+                f"lambda2={float(self.lambda2.detach().item()):.4f} "
+                f"attn_sample={attn_sample}"
+            )
 
         # ---------------------------------------
         # 8. Final output

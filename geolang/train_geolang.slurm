@@ -1,16 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=geolang_train
-#SBATCH --partition=gpu-a100
-#SBATCH --ntasks=2
-#SBATCH --cpus-per-task=32
-#SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=32G
-#SBATCH --time=12:00:00
-#SBATCH --output=logs/geolang_%j.log
-#SBATCH --error=logs/geolang_%j.err
-
-mkdir -p logs
-cd /scratch/ysurange/cv/HAGRID/geolang || exit 1
+#SBATCH --job-name=crog_train
+#SBATCH --partition=gpu
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --gpus-per-task=2
+#SBATCH --mem-per-gpu=64G
+#SBATCH --time=06:00:00
+#SBATCH --output=logs/crog_%j.log
+#SBATCH --error=logs/crog_%j.err
 
 # =============================
 # Safety + debug info
@@ -22,13 +19,8 @@ echo "Working dir: $(pwd)"
 # =============================
 # Activate conda environment
 # =============================
-# Load modules
-module load 2025
-module load miniconda3
-
-# Initialize conda
-source $(conda info --base)/etc/profile.d/conda.sh
-conda activate /scratch/ysurange/conda_envs/vmamba_new
+source /home/tstanley/miniconda3/etc/profile.d/conda.sh
+conda activate vmamba_copy
 
 # Verify python + torch
 echo "Python path: $(which python)"
@@ -41,13 +33,12 @@ echo "=== GPU BEFORE ==="
 nvidia-smi
 
 # =============================
-# Run GeoLang training
+# Run CROG training (2 GPUs)
 # =============================
 echo "=== START TRAINING ==="
-export MASTER_ADDR=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
-export MASTER_PORT=${MASTER_PORT:-$((12000 + (${SLURM_JOB_ID:-0} % 20000)))}
-export WORLD_SIZE=${SLURM_NTASKS}
-srun --kill-on-bad-exit=1 python train_geolang.py --config config/OCID-VLG/geolang_multiple_r50.yaml
+python -m torch.distributed.run \
+    --nproc_per_node=2 \
+    train_crog.py --config config/OCID-VLG/crog_multiple_r50.yaml
 
 # =============================
 # GPU check after training

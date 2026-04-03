@@ -1,6 +1,6 @@
 DATA:
   dataset: OCID-VLG
-  root_path: /scratch/ysurange/ocid_dataset
+  root_path: ./datasets/OCID-VLG
   train_split: train
   val_split: val
 TRAIN:
@@ -10,8 +10,8 @@ TRAIN:
   fpn_in: [512]
   fpn_out: [512]
   use_pretrained_mamba_clip: True
-  mamba_clip_pretrain: /scratch/ysurange/cv/HAGRID/VMamba_B_clip.pt
-  clip_pretrain: /scratch/ysurange/cv/HAGRID/RN50.pt
+  mamba_clip_pretrain: ./pretrain/VMamba_B_clip.pt
+  clip_pretrain: ./pretrain/RN50.pt
   version: multiple
   input_size: 416
   word_len: 20
@@ -19,8 +19,9 @@ TRAIN:
   # DGGM
   use_dggm: True
   dggm_max_tokens: 4096
+  normalize_after_reweight: False # set it to True if only training DGGM.
   # ADCI
-  use_adci: True
+  use_adci: False
   adci_align_channels: 512
   adci_out_channels: 512
   adci_groups: 1
@@ -36,8 +37,8 @@ TRAIN:
   epochs: 50
   milestones: [35]
   start_epoch: 0
-  batch_size: 64  # batch size for training
-  batch_size_val: 64  # batch size for validation during training, memory and speed tradeoff
+  batch_size: 2  # batch size for training
+  batch_size_val: 24  # batch size for validation during training, memory and speed tradeoff
   base_lr: 0.0000316
   lr_decay: 0.1
   lr_multi: 0.1
@@ -47,11 +48,11 @@ TRAIN:
   print_freq: 100
   detect_anomaly: False  # Enable torch.autograd.set_detect_anomaly for NaN   ging
   # Resume & Save
-  exp_name: CROG_multiple_R50
+  exp_name: GEOLANG_TEST_FINAL
   output_folder: exp/OCID-VLG_multiple
   save_freq: 1
   weight:  # path to initial weight (default: none)
-  resume:  
+  resume: #/home/tejass/Downloads/TUDELFT_ROBOTICS/Robotics_Q3/CV/tejas_dggm_updated_weights/best_iou_model.pth
   evaluate: True  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
   # Ablation study
   use_contrastive: True
@@ -68,5 +69,5 @@ Distributed:
   world_size: 1
   rank: 0
 TEST:
-  test_split: val-test
+  test_split: test
   visualize: False

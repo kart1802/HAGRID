@@ -9,8 +9,8 @@ import torch.utils.data
 from loguru import logger
 
 import utils.config as config
-from engine.crog_engine import inference_with_grasp
-from model import build_crog
+from engine.geolang_engine import inference_with_grasp
+from model import build_geolang
 from utils.dataset import OCIDVLGDataset
 from utils.misc import setup_logger
 
@@ -66,7 +66,7 @@ def main():
                                               collate_fn=OCIDVLGDataset.collate_fn)
 
     # build model
-    model, _ = build_crog(args)
+    model, _ = build_geolang(args)
     model = torch.nn.DataParallel(model).cuda()
     logger.info(model)
     

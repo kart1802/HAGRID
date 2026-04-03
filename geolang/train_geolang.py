@@ -26,7 +26,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 import utils.config as config
 import wandb
 from utils.dataset import OCIDVLGDataset
-from engine.crog_engine import train_with_grasp, validate_with_grasp, validate_without_grasp
+from engine.geolang_engine import train_with_grasp, validate_with_grasp, validate_without_grasp
 from model import build_geolang
 from utils.misc import (init_random_seed, set_random_seed, setup_logger,
                         worker_init_fn)
@@ -137,7 +137,7 @@ def main_worker(gpu, args):
     # wandb (rank-0 only)
     use_wandb = getattr(args, "use_wandb", True)
     wandb_mode = getattr(args, "wandb_mode", os.environ.get("WANDB_MODE", "offline"))
-    wandb_project = getattr(args, "wandb_project", "CROG")
+    wandb_project = getattr(args, "wandb_project", "Geolang")
     if args.rank == 0 and use_wandb:
         wandb.init(
             job_type="training",
