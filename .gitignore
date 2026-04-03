@@ -1,0 +1,17 @@
+# Ignore the OCID-VLG dataset
+geolang/datasets/OCID-VLG
+
+# Common things to ignore
+*.pyc
+__pycache__/
+*.pkl
+*.pt
+*.pth
+*.log
+.env
+*.egg-info/
+*.zip
+*.tar.gz
+results/
+media/
+weights/

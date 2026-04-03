@@ -1,0 +1,7 @@
+Lmod has detected the following error: These module(s) or extension(s) exist
+but cannot be loaded as requested: "gcc"
+   Try: "module spider gcc" to see how to load the module(s).
+
+
+
+/cm/local/apps/slurm/var/spool/job9421134/slurm_script: line 33: srun: command not found

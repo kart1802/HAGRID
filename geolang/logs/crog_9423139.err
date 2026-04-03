@@ -1,0 +1,30 @@
+
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+/home/tstanley/miniconda3/envs/vmamba_copy/lib/python3.10/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (7.0.1)/charset_normalizer (3.1.0) doesn't match a supported version!
+  warnings.warn(
+2026-03-22 11:14:44.948 | ERROR    | __main__:<module>:299 - An error has been caught in function '<module>', process 'MainProcess' (222279), thread 'MainThread' (23456247964160):
+Traceback (most recent call last):
+
+> File "/scratch/tstanley/HAGRID/geolang/train_crog.py", line 299, in <module>
+    main()
+    └ <function main at 0x1553fbf024d0>
+
+  File "/scratch/tstanley/HAGRID/geolang/train_crog.py", line 64, in main
+    raise RuntimeError(
+
+RuntimeError: train_crog.py already launches multiprocessing workers internally. Do not run it with torchrun/torch.distributed.run. Use: python train_crog.py --config <config_path>.
+2026-03-22 11:14:44.948 | ERROR    | __main__:<module>:299 - An error has been caught in function '<module>', process 'MainProcess' (222281), thread 'MainThread' (23456247964160):
+Traceback (most recent call last):
+
+> File "/scratch/tstanley/HAGRID/geolang/train_crog.py", line 299, in <module>
+    main()
+    └ <function main at 0x1553fbf024d0>
+
+  File "/scratch/tstanley/HAGRID/geolang/train_crog.py", line 64, in main
+    raise RuntimeError(
+
+RuntimeError: train_crog.py already launches multiprocessing workers internally. Do not run it with torchrun/torch.distributed.run. Use: python train_crog.py --config <config_path>.
