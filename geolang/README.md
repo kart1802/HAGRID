@@ -22,10 +22,10 @@ Follow the official VMamba installation instructions:
 **Important:**
 - Install VMamba with **GPU support enabled**.
 - This is required because VMamba depends on **`selective-scan`**, which requires CUDA.
-- CPU-only installation will not work correctly for this project.
+- A CPU-only installation will not work correctly for this project.
 
 This step will install:
-- PyTorch (compatible version)
+- PyTorch
 - Triton
 - Mamba (`mamba_ssm`)
 - `selective-scan` and related CUDA dependencies
@@ -43,6 +43,28 @@ conda env update -f environment.yml
 ---
 
 ## 4. Training
+
+To train Geolang, run:
+
+```bash
+python train_geolang.py --config config/OCID-VLG/geolang_main_config.yaml
+```
+
+### Distributed GPU Training with SLURM
+
+To train on distributed GPUs, use the provided SLURM script:
+
+```bash
+sbatch train_geolang.slurm
+```
+
+Make sure the paths inside `train_geolang.slurm` are updated appropriately for your system, including:
+- the project root directory
+- the conda environment activation path
+- the log/output directory
+- any dataset or checkpoint paths if required
+
+If needed, update the training command inside the SLURM file so that it points to the correct config file, for example:
 
 ```bash
 python train_geolang.py --config config/OCID-VLG/geolang_main_config.yaml
@@ -131,8 +153,8 @@ python test_geolang.py --config config/OCID-VLG/geolang_main_config.yaml
 
 ## Notes
 
-- Install VMamba first to ensure correct PyTorch + CUDA compatibility.
-- Do not reinstall torch or triton after VMamba setup.
-- Always update the `resume` path in config before testing.
-- Use appropriate config files for ablation vs full model.
-- Ensure GPU/CUDA is properly configured before installing VMamba.
+- Install VMamba first to ensure correct PyTorch and CUDA compatibility.
+- Always update the `resume` path in the config before testing.
+- Use the appropriate config files for ablation and full-model experiments.
+- Ensure GPU and CUDA are properly configured before installing VMamba.
+- For cluster training, verify all paths in `train_geolang.slurm` before submission.
