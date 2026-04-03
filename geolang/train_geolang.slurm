@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=crog_train
+#SBATCH --job-name=geolang_dggm_train
 #SBATCH --partition=gpu
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=32
 #SBATCH --gpus-per-task=2
 #SBATCH --mem-per-gpu=64G
 #SBATCH --time=06:00:00
-#SBATCH --output=logs/crog_%j.log
-#SBATCH --error=logs/crog_%j.err
+#SBATCH --output=logs/geolang_%j.log
+#SBATCH --error=logs/geolang_%j.err
 
 # =============================
 # Safety + debug info
@@ -33,12 +33,12 @@ echo "=== GPU BEFORE ==="
 nvidia-smi
 
 # =============================
-# Run CROG training (2 GPUs)
+# Run Geolang training (2 GPUs)
 # =============================
 echo "=== START TRAINING ==="
 python -m torch.distributed.run \
     --nproc_per_node=2 \
-    train_crog.py --config config/OCID-VLG/crog_multiple_r50.yaml
+    train_geolang.py --config config/OCID-VLG/geolang_last_config.yaml
 
 # =============================
 # GPU check after training
