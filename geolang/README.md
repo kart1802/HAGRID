@@ -7,8 +7,8 @@ This guide explains how to set up the environment for Geolang with VMamba.
 ## 1. Create Conda Environment
 
 ```bash
-conda create -n vmamba_crog python=3.10
-conda activate vmamba_crog
+conda create -n vmamba_geolang python=3.10
+conda activate vmamba_geolang
 ```
 
 ---
