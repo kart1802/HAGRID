@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=geolang_dggm_train
-#SBATCH --partition=gpu
+#SBATCH --partition=gpu-a100
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
 #SBATCH --gpus-per-task=2

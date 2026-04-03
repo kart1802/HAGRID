@@ -19,7 +19,7 @@ TRAIN:
   # DGGM
   use_dggm: True
   dggm_max_tokens: 4096
-  normalize_after_reweight: False # set it to True if only training DGGM.
+  normalize_after_reweight: True # set it to True if only training DGGM.
   # ADCI
   use_adci: False
   adci_align_channels: 512
@@ -48,7 +48,7 @@ TRAIN:
   print_freq: 100
   detect_anomaly: False  # Enable torch.autograd.set_detect_anomaly for NaN   ging
   # Resume & Save
-  exp_name: GEOLANG_TEST_FINAL
+  exp_name: GEOLANG_DGGM
   output_folder: exp/OCID-VLG_multiple
   save_freq: 1
   weight:  # path to initial weight (default: none)
@@ -61,7 +61,7 @@ TRAIN:
   # Weights & Biases
   use_wandb: True
   wandb_mode: offline
-  wandb_project: Geolang
+  wandb_project: Geolang_DGGM
 Distributed:
   dist_url: tcp://localhost:3681
   dist_backend: 'nccl'
